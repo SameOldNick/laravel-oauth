@@ -4,6 +4,7 @@ providers:
   - Laravel\Socialite\SocialiteServiceProvider
   - SameOldNick\OAuth\ServiceProvider
   - Workbench\App\Providers\WorkbenchServiceProvider
+  - Laravel\Fortify\FortifyServiceProvider
 
 migrations:
   - workbench/database/migrations
