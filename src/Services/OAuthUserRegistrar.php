@@ -2,16 +2,16 @@
 
 namespace SameOldNick\OAuth\Services;
 
-use App\Actions\Fortify\CreateNewUser;
-use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar as OAuthUserRegistrarContract;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Socialite\Contracts\User as SocialUser;
+use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar as OAuthUserRegistrarContract;
 
 class OAuthUserRegistrar implements OAuthUserRegistrarContract
 {
     public function __construct(
-        protected readonly CreateNewUser $userCreator,
+        protected readonly CreatesNewUsers $userCreator,
     ) {
         //
     }

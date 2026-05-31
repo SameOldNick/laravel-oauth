@@ -2,11 +2,11 @@
 
 namespace SameOldNick\OAuth\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver as OAuthUserResolverContract;
 use SameOldNick\OAuth\Support\ConfigHelper;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Laravel\Socialite\Contracts\User as SocialUser;
 
 class OAuthUserResolver implements OAuthUserResolverContract
 {

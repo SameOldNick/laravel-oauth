@@ -3,15 +3,16 @@
 namespace SameOldNick\OAuth\Testing;
 
 use App\Models\User;
-use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator;
-use SameOldNick\OAuth\Contracts\Services\OAuthGate;
-use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver;
-use SameOldNick\OAuth\Facades\OAuth;
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Response;
 use Illuminate\Testing\TestCase;
 use Illuminate\Testing\TestResponse;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use Mockery\MockInterface;
+use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator;
+use SameOldNick\OAuth\Contracts\Services\OAuthGate;
+use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver;
+use SameOldNick\OAuth\Facades\OAuth;
 
 /**
  * Trait providing OAuth testing utilities and assertions.
@@ -180,7 +181,7 @@ trait InteractsWithOAuthCallbacks
      * @param  string  $clientName  The name of the OAuth client (e.g., 'github').
      * @param  SocialUser|null  $socialUser  Optional social user data to use for the association.
      */
-    protected function connectOAuthAccount(User $user, string $clientName = 'github', ?SocialUser $socialUser = null): void
+    protected function connectOAuthAccount(Authenticatable $user, string $clientName = 'github', ?SocialUser $socialUser = null): void
     {
         $client = OAuth::client($clientName);
         $socialUser = $socialUser ?? $client->provider()->user();
@@ -197,9 +198,9 @@ trait InteractsWithOAuthCallbacks
      *
      * @param  string  $clientName  The OAuth client name (e.g., 'github').
      * @param  SocialUser|null  $socialUser  Optional social user data; defaults to mocked provider user.
-     * @return User|null The associated user, or null if no account is linked.
+     * @return Authenticatable|null The associated user, or null if no account is linked.
      */
-    protected function getOAuthLinkedUser(string $clientName = 'github', ?SocialUser $socialUser = null): ?User
+    protected function getOAuthLinkedUser(string $clientName = 'github', ?SocialUser $socialUser = null): ?Authenticatable
     {
         $client = OAuth::client($clientName);
         $socialUser = $socialUser ?? $client->provider()->user();
@@ -220,11 +221,11 @@ trait InteractsWithOAuthCallbacks
      * Verifies both that an OAuth account exists for the provider and that it is
      * associated with the correct user.
      *
-     * @param  User  $user  The user expected to own the OAuth account.
+     * @param  Authenticatable  $user  The user expected to own the OAuth account.
      * @param  string  $clientName  The OAuth client name (e.g., 'github').
      * @param  SocialUser|null  $socialUser  Optional social user data; defaults to mocked provider user.
      */
-    protected function assertOAuthAccountAssociated(User $user, string $clientName = 'github', ?SocialUser $socialUser = null): void
+    protected function assertOAuthAccountAssociated(Authenticatable $user, string $clientName = 'github', ?SocialUser $socialUser = null): void
     {
         $linkedUser = $this->getOAuthLinkedUser($clientName, $socialUser);
 
@@ -241,11 +242,11 @@ trait InteractsWithOAuthCallbacks
      * Verifies either that no OAuth account exists for the provider, or that
      * it is associated with a different user.
      *
-     * @param  User  $user  The user that should not own the OAuth account.
+     * @param  Authenticatable  $user  The user that should not own the OAuth account.
      * @param  string  $clientName  The OAuth client name (e.g., 'github').
      * @param  SocialUser|null  $socialUser  Optional social user data; defaults to mocked provider user.
      */
-    protected function assertOAuthAccountNotAssociated(User $user, string $clientName = 'github', ?SocialUser $socialUser = null): void
+    protected function assertOAuthAccountNotAssociated(Authenticatable $user, string $clientName = 'github', ?SocialUser $socialUser = null): void
     {
         $client = OAuth::client($clientName);
         $socialUser = $socialUser ?? $client->provider()->user();
