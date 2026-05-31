@@ -1,0 +1,87 @@
+<?php
+
+namespace SameOldNick\OAuth\Models;
+
+use App\Models\User;
+use SameOldNick\OAuth\Events\AccountDisconnected;
+use SameOldNick\OAuth\Support\ConfigHelper;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Carbon;
+
+/**
+ * @property int $id
+ * @property int $user_id
+ * @property string $provider_name
+ * @property string $provider_id
+ * @property string $access_token
+ * @property ?string $refresh_token
+ * @property ?string $avatar_url
+ * @property ?Carbon $created_at
+ * @property ?Carbon $updated_at
+ * @property ?Carbon $expires_at
+ * @property-read User $user
+ */
+class OAuthProvider extends Model
+{
+    /**
+     * The table associated with the model.
+     *
+     * @var string
+     */
+    protected $table = 'oauth_providers';
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var list<string>
+     */
+    protected $fillable = [];
+
+    /**
+     * The relations to eager load on every query.
+     *
+     * @var list<string>
+     */
+    protected $with = [];
+
+    /**
+     * The attributes that should be visible in serialization.
+     *
+     * @var array<string>
+     */
+    protected $visible = [
+        'provider_name',
+        'avatar_url',
+        'created_at',
+        'updated_at',
+        'expires_at',
+    ];
+
+    /**
+     * The attributes that should be cast.
+     *
+     * @var array<string, string>
+     */
+    protected $casts = [
+        'expires_at' => 'datetime',
+    ];
+
+    /**
+     * Gets the user the OAuth provider belongs to
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(ConfigHelper::getUserModel(), 'user_id');
+    }
+
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        static::deleted(function (OAuthProvider $oAuthProvider) {
+            AccountDisconnected::dispatch($oAuthProvider->user, $oAuthProvider->provider_name);
+        });
+    }
+}
