@@ -2,6 +2,11 @@
 
 namespace SameOldNick\OAuth\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
+use Laravel\Fortify\Features;
+use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Contracts\Responses\Errors;
 use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState;
@@ -9,10 +14,6 @@ use SameOldNick\OAuth\Contracts\Services\OAuthGate as OAuthGateContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver;
 use SameOldNick\OAuth\Exceptions\OAuthGateFailureException;
 use SameOldNick\OAuth\Support\ConfigHelper;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Log;
-use Laravel\Fortify\Features;
-use Laravel\Socialite\Contracts\User as SocialUser;
 
 class OAuthGate implements OAuthGateContract
 {
@@ -35,10 +36,16 @@ class OAuthGate implements OAuthGateContract
         $userModel = ConfigHelper::getUserModel();
         $emailField = ConfigHelper::getUserEmailField();
 
-        $user = $userModel::withTrashed()->where($emailField, $socialUser->getEmail())->first();
+        $query = $userModel::query();
+
+        if ($this->isUserSoftDeletable()) {
+            $query->withTrashed();
+        }
+
+        $user = $query->where($emailField, $socialUser->getEmail())->first();
 
         if ($user) {
-            if ($user->trashed()) {
+            if ($this->isUserSoftDeletable() && $user->trashed()) {
                 // Email exists but user is soft-deleted
                 Log::warning('OAuth login attempt for soft-deleted user', [
                     'email' => $socialUser->getEmail(),
@@ -101,6 +108,16 @@ class OAuthGate implements OAuthGateContract
     public function canUnlink(Client $client, SocialUser $socialUser, Authenticatable $user): bool
     {
         return true;
+    }
+
+    /**
+     * Checks if users model is soft deletable
+     */
+    protected function isUserSoftDeletable(): bool
+    {
+        $userModel = ConfigHelper::getUserModel();
+
+        return in_array(SoftDeletes::class, class_uses($userModel), true);
     }
 
     /**
