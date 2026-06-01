@@ -208,6 +208,15 @@ trait InteractsWithOAuthCallbacks
         return app()->make(OAuthUserResolver::class)->resolveLinkedUser($client, $socialUser);
     }
 
+    /**
+     * Assert that an OAuth account exists for the given provider and social user data.
+     *
+     * Verifies that there is a user associated with the specified OAuth provider and
+     * social user information, without asserting which specific user it is.
+     *
+     * @param  string  $clientName  The OAuth client name (e.g., 'github').
+     * @param  SocialUser|null  $socialUser  Optional social user data; defaults to mocked provider user.
+     */
     protected function assertOAuthAccountExists(string $clientName = 'github', ?SocialUser $socialUser = null): void
     {
         $linkedUser = $this->getOAuthLinkedUser($clientName, $socialUser);

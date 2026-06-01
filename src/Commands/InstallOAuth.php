@@ -6,8 +6,16 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use InvalidArgumentException;
 
+/**
+ * Scaffolds stack-specific OAuth integration classes into the host application.
+ */
 class InstallOAuth extends Command
 {
+    /**
+     * The console command signature.
+     *
+     * @var string
+     */
     public $signature = 'oauth:install
                         {--force : Overwrite existing files}
                         {--path= : Destination path for generated OAuth classes}
@@ -16,14 +24,27 @@ class InstallOAuth extends Command
                         {--skip-registration : Skip auto-registration of generated service provider in bootstrap/providers.php}
                         {--stack=fortify : Authentication stack preset to scaffold}';
 
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
     public $description = 'Scaffold app-level OAuth services and responses so each app can own its implementation.';
 
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
     public function __construct(
         protected readonly Filesystem $files,
     ) {
         parent::__construct();
     }
 
+    /**
+     * Execute the console command.
+     */
     public function handle(): int
     {
         $stack = strtolower((string) $this->option('stack'));
@@ -87,6 +108,8 @@ class InstallOAuth extends Command
     }
 
     /**
+     * Resolve the source-to-destination file map for the selected stack.
+     *
      * @return array<string, string>
      */
     protected function sourceToDestinationMap(string $stack): array
@@ -100,6 +123,11 @@ class InstallOAuth extends Command
         };
     }
 
+    /**
+     * Build source and destination mappings for the Fortify stack.
+     *
+     * @return array<string, string>
+     */
     protected function fortifySourceToDestinationMap(string $baseDestination): array
     {
         $baseSource = $this->relativePath($this->resolveStubsRoot().'/stacks/fortify');
@@ -122,6 +150,11 @@ class InstallOAuth extends Command
         ];
     }
 
+    /**
+     * Build source and destination mappings for the custom stack.
+     *
+     * @return array<string, string>
+     */
     protected function customSourceToDestinationMap(string $baseDestination): array
     {
         $baseSource = $this->relativePath($this->resolveStubsRoot().'/stacks/custom');
@@ -144,11 +177,17 @@ class InstallOAuth extends Command
         ];
     }
 
+    /**
+     * Get the absolute path to the stub root directory.
+     */
     protected function resolveStubsRoot(): string
     {
         return dirname(__DIR__).'/../resources/stubs';
     }
 
+    /**
+     * Resolve the target base directory for generated files.
+     */
     protected function resolveDestinationPath(string $path): string
     {
         $trimmed = trim($path);
@@ -164,6 +203,9 @@ class InstallOAuth extends Command
         return base_path($trimmed);
     }
 
+    /**
+     * Determine whether a path is absolute for Windows and POSIX formats.
+     */
     protected function isAbsolutePath(string $path): bool
     {
         if ($path === '') {
@@ -174,6 +216,11 @@ class InstallOAuth extends Command
         return (bool) preg_match('/^(?:[A-Za-z]:[\\\\\/]|\\\\\\\\|\/)/', $path);
     }
 
+    /**
+     * Copy a stub file to its target destination after namespace transforms.
+     *
+     * @return 'generated'|'skipped'
+     */
     protected function copyClassFile(string $source, string $destination, bool $force): string
     {
         if (! $this->files->exists($source)) {
@@ -200,6 +247,9 @@ class InstallOAuth extends Command
         return 'generated';
     }
 
+    /**
+     * Ask whether an existing file should be overwritten in interactive mode.
+     */
     protected function promptForOverwrite(string $filePath): bool
     {
         if ($this->option('no-interaction')) {
@@ -209,6 +259,9 @@ class InstallOAuth extends Command
         return $this->confirm("File already exists at [{$filePath}]. Do you want to overwrite it?", false);
     }
 
+    /**
+     * Apply namespace transformations for generated application files.
+     */
     protected function transformForApplication(string $content): string
     {
         return str_replace(
@@ -224,6 +277,9 @@ class InstallOAuth extends Command
         );
     }
 
+    /**
+     * Return the current stack name in StudlyCase.
+     */
     protected function stackStudly(): string
     {
         $stack = strtolower((string) $this->option('stack'));
@@ -231,6 +287,11 @@ class InstallOAuth extends Command
         return ucfirst($stack);
     }
 
+    /**
+     * Create or update the generated OAuth service provider.
+     *
+     * @return 'generated'|'skipped'
+     */
     protected function createBindingsProvider(string $destination, bool $force): string
     {
         if ($this->files->exists($destination) && ! $force) {
@@ -253,11 +314,17 @@ class InstallOAuth extends Command
         return 'generated';
     }
 
+    /**
+     * Get the source path for the provider stub.
+     */
     protected function getSourceServiceProviderPath(): string
     {
         return $this->resolveStubsRoot().'/shared/Providers/OAuthServiceProvider.php';
     }
 
+    /**
+     * Add the generated provider to bootstrap/providers.php if missing.
+     */
     protected function registerProviderInBootstrap(): bool
     {
         $providersFile = base_path('bootstrap/providers.php');
@@ -290,6 +357,9 @@ class InstallOAuth extends Command
         return true;
     }
 
+    /**
+     * Convert an absolute path to a base-path-relative string for display.
+     */
     protected function relativePath(string $path): string
     {
         $base = rtrim(base_path(), '\\/').DIRECTORY_SEPARATOR;
