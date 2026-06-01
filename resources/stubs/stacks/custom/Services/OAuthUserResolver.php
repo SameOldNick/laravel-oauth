@@ -1,6 +1,6 @@
 <?php
 
-namespace SameOldNick\OAuth\Services;
+namespace VendorName\OAuth\Custom\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Laravel\Socialite\Contracts\User as SocialUser;

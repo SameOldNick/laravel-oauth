@@ -1,14 +1,14 @@
 <?php
 
-namespace SameOldNick\OAuth\Services;
+namespace VendorName\OAuth\Custom\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator as OAuthAccountAssociatorContract;
 use SameOldNick\OAuth\Events\AccountConnected;
 use SameOldNick\OAuth\Models\OAuthProvider;
 use SameOldNick\OAuth\Support\ConfigHelper;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Laravel\Socialite\Contracts\User as SocialUser;
 
 class OAuthAccountAssociator implements OAuthAccountAssociatorContract
 {

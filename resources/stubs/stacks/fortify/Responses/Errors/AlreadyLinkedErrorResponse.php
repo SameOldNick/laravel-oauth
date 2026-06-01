@@ -1,11 +1,11 @@
 <?php
 
-namespace SameOldNick\OAuth\Responses\Errors;
+namespace VendorName\OAuth\Fortify\Responses\Errors;
 
-use SameOldNick\OAuth\Clients\Client;
-use SameOldNick\OAuth\Contracts\Responses\Errors\AlreadyLinkedErrorResponse as ErrorResponsesContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Laravel\Socialite\Contracts\User as SocialUser;
+use SameOldNick\OAuth\Clients\Client;
+use SameOldNick\OAuth\Contracts\Responses\Errors\AlreadyLinkedErrorResponse as ErrorResponsesContract;
 
 class AlreadyLinkedErrorResponse implements ErrorResponsesContract
 {

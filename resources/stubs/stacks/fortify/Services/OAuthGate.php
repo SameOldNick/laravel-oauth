@@ -1,6 +1,6 @@
 <?php
 
-namespace SameOldNick\OAuth\Services;
+namespace VendorName\OAuth\Fortify\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;

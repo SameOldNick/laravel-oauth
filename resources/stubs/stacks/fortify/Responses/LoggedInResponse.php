@@ -1,6 +1,6 @@
 <?php
 
-namespace SameOldNick\OAuth\Responses;
+namespace VendorName\OAuth\Fortify\Responses;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Laravel\Fortify\Fortify;

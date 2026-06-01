@@ -1,14 +1,14 @@
 <?php
 
-namespace SameOldNick\OAuth\Responses;
+namespace VendorName\OAuth\Fortify\Responses;
 
-use SameOldNick\OAuth\Clients\Client;
-use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse as AuthenticateResponseContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
 use Laravel\Socialite\Contracts\User as SocialUser;
+use SameOldNick\OAuth\Clients\Client;
+use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse as AuthenticateResponseContract;
 
 class AuthenticateResponse implements AuthenticateResponseContract
 {

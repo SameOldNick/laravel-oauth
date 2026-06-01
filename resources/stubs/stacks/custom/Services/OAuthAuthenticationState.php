@@ -1,10 +1,10 @@
 <?php
 
-namespace SameOldNick\OAuth\Services;
+namespace VendorName\OAuth\Custom\Services;
 
-use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState as OAuthAuthenticationStateContract;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Auth;
+use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState as OAuthAuthenticationStateContract;
 
 class OAuthAuthenticationState implements OAuthAuthenticationStateContract
 {
