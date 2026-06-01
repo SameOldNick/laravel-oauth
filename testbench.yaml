@@ -5,6 +5,7 @@ providers:
   - SameOldNick\OAuth\ServiceProvider
   - Workbench\App\Providers\WorkbenchServiceProvider
   - Laravel\Fortify\FortifyServiceProvider
+  - Workbench\App\Providers\OAuthServiceProvider
 
 migrations:
   - workbench/database/migrations
