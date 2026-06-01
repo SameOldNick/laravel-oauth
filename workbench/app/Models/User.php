@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 use SameOldNick\OAuth\Concerns\HasConnectedAccounts;
 use Workbench\Database\Factories\UserFactory;
 
@@ -16,9 +17,10 @@ use Workbench\Database\Factories\UserFactory;
 class User extends Authenticatable
 {
     use HasConnectedAccounts;
-
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
+
+    use TwoFactorAuthenticatable;
 
     /**
      * The attributes that should be hidden for serialization.
