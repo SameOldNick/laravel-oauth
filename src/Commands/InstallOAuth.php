@@ -130,7 +130,7 @@ class InstallOAuth extends Command
      */
     protected function fortifySourceToDestinationMap(string $baseDestination): array
     {
-        $baseSource = $this->relativePath($this->resolveStubsRoot().'/stacks/fortify');
+        $baseSource = $this->resolveStubsRoot().'/stacks/fortify';
         $stackDestination = rtrim($baseDestination, '/\\').'/Fortify';
 
         return [
@@ -152,7 +152,7 @@ class InstallOAuth extends Command
      */
     protected function customSourceToDestinationMap(string $baseDestination): array
     {
-        $baseSource = $this->relativePath($this->resolveStubsRoot().'/stacks/custom');
+        $baseSource = $this->resolveStubsRoot().'/stacks/custom';
         $stackDestination = rtrim($baseDestination, '/\\').'/Custom';
 
         return [
