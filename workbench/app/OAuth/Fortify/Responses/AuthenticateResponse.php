@@ -3,15 +3,16 @@
 namespace Workbench\App\OAuth\Fortify\Responses;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Laravel\Fortify\Events\TwoFactorAuthenticationChallenged;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
+use SameOldNick\OAuth\Concerns\Scaffolding\CreatesAuthenticatedOAuthResponses;
 use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse as AuthenticateResponseContract;
 
 class AuthenticateResponse implements AuthenticateResponseContract
 {
+    use CreatesAuthenticatedOAuthResponses;
+
     public function __construct(
         protected readonly LoggedInResponse $loggedInResponse,
     ) {
@@ -36,21 +37,6 @@ class AuthenticateResponse implements AuthenticateResponseContract
                 ->with('status', __('oauth::messages.tfa_required', ['provider' => $client->getName()]));
         }
 
-        // Log the user in and redirect to home
-        $this->login($user);
-
-        return $this->loggedInResponse->create($client, $socialUser, $user);
-    }
-
-    /**
-     * Login user
-     *
-     * @return $this
-     */
-    protected function login(Authenticatable $user): static
-    {
-        Auth::login($user);
-
-        return $this;
+        return $this->createAuthenticatedResponse($client, $socialUser, $user);
     }
 }
