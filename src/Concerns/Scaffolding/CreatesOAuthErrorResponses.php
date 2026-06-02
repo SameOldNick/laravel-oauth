@@ -30,7 +30,7 @@ trait CreatesOAuthErrorResponses
             OAuthError::CannotLink => __('oauth::messages.cannot_link', ['provider' => $client->getName()]),
             OAuthError::LoginNotAllowed => __('oauth::messages.login_not_allowed', ['provider' => $client->getName()]),
             OAuthError::UserTrashed => __('oauth::messages.user_trashed', ['provider' => $client->getName()]),
-            default => __('An unknown error occurred while processing your OAuth request. Please try again.'),
+            default => __('oauth::messages.unknown_error', ['provider' => $client->getName()]),
         };
     }
 }

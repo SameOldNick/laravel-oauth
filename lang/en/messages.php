@@ -12,4 +12,5 @@ return [
     'user_trashed' => 'This :provider account is associated with a deleted account. Please contact support.',
     'tfa_required' => 'Please complete two-factor authentication to log in with your :provider account.',
     'successfully_signed_in' => 'Successfully signed in with :provider.',
+    'unknown_error' => 'An unknown error occurred while processing your OAuth request. Please try again.',
 ];
