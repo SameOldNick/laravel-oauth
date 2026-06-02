@@ -2,6 +2,7 @@
 
 namespace SameOldNick\OAuth\Concerns\Scaffolding\OAuthGate;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialUser;
@@ -12,6 +13,16 @@ use SameOldNick\OAuth\Support\ConfigHelper;
 
 trait AppliesOAuthGateRegisterRules
 {
+    /**
+     * Create an OAuth error response.
+     */
+    abstract protected function createErrorResponse(
+        OAuthError $error,
+        Client $client,
+        SocialUser $socialUser,
+        ?Authenticatable $user = null
+    );
+
     /**
      * Determine if the given OAuth profile is eligible for registration.
      */
