@@ -15,15 +15,19 @@ trait HandlesOAuthAccountAssociation
     /**
      * {@inheritDoc}
      */
-    public function associate(Client $client, Authenticatable $user, SocialUser $socialUser, bool $replace = false): void
+    public function associate(Client $client, Authenticatable $user, SocialUser $socialUser): void
     {
-        DB::transaction(function () use ($client, $user, $socialUser, $replace): void {
-            if ($replace) {
+        DB::transaction(function () use ($client, $user, $socialUser): void {
+            $oauthProviderModel = ConfigHelper::getConnectedAccountModel();
+
+            $oauthProvider = $oauthProviderModel::where('user_id', $user->getAuthIdentifier())
+                ->where('provider_name', $client->clientName())
+                ->first();
+
+            if ($oauthProvider) {
                 $oauthProviderModel = ConfigHelper::getConnectedAccountModel();
 
-                $oauthProviderModel::where('user_id', $user->getAuthIdentifier())
-                    ->where('provider_name', $client->clientName())
-                    ->delete();
+                $oauthProvider->delete();
             }
 
             $oauthProvider = $this->mapToOAuthProvider($client, $socialUser);
