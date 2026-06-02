@@ -4,11 +4,12 @@ namespace SameOldNick\OAuth\Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\AlreadyLinkedErrorResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\CannotLinkResponse;
+use SameOldNick\OAuth\Contracts\Responses\ErrorResponse;
 use SameOldNick\OAuth\Contracts\Responses\LoggedInResponse;
+use SameOldNick\OAuth\Enums\OAuthError;
 use SameOldNick\OAuth\Facades\OAuth;
 use SameOldNick\OAuth\Testing\InteractsWithOAuthCallbacks;
+use SameOldNick\OAuth\Testing\TestOAuthResponse;
 use SameOldNick\OAuth\Tests\TestCase;
 use Workbench\App\Models\User;
 
@@ -54,7 +55,11 @@ class OAuthLinkedTest extends TestCase
     {
         OAuth::fake();
 
-        $expectedResponse = $this->expectOAuthResponseInstance(CannotLinkResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::CannotLink),
+            abstract: ErrorResponse::class
+        );
+
         $this->mockOAuthGate(canLink: false);
 
         $user = User::factory()->create();
@@ -74,7 +79,10 @@ class OAuthLinkedTest extends TestCase
     {
         OAuth::fake();
 
-        $expectedResponse = $this->expectOAuthResponseInstance(AlreadyLinkedErrorResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::AlreadyLinked),
+            abstract: ErrorResponse::class
+        );
 
         $user1 = User::factory()->create();
         $user2 = User::factory()->create();

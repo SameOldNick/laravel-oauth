@@ -8,7 +8,7 @@ use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\InvalidStateException;
 use Mockery;
 use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\MustLoginToLinkResponse;
+use SameOldNick\OAuth\Enums\OAuthError;
 use SameOldNick\OAuth\Facades\OAuth;
 use SameOldNick\OAuth\Testing\InteractsWithOAuthCallbacks;
 use SameOldNick\OAuth\Tests\TestCase;
@@ -101,6 +101,11 @@ class OAuthFlowEdgeCasesTest extends TestCase
             'email' => 'newuser@example.com',
         ]);
 
+        config([
+            'oauth.allow_registration' => true,
+            'oauth.require_verified_email_to_link' => false,
+        ]);
+
         $this->assertOAuthResponseReturned(AuthenticateResponse::class);
 
         $response = $this->get(route('oauth.callback', ['client' => 'github']));
@@ -138,7 +143,7 @@ class OAuthFlowEdgeCasesTest extends TestCase
             'email' => 'existing@example.com',
         ]);
 
-        $this->assertOAuthResponseReturned(MustLoginToLinkResponse::class);
+        $this->assertOAuthResponseReturned($this->mockErrorResponse(OAuthError::MustLoginToLink));
 
         // User with password already exists
         User::factory()->create([

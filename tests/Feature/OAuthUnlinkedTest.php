@@ -5,15 +5,12 @@ namespace SameOldNick\OAuth\Tests\Feature;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\AlreadyLinkedErrorResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\CannotLinkResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\LoginNotAllowedResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\MustLoginToLinkResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\RegistrationNotAllowedResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors\UserTrashedResponse;
+use SameOldNick\OAuth\Contracts\Responses\ErrorResponse;
 use SameOldNick\OAuth\Contracts\Responses\LoggedInResponse;
+use SameOldNick\OAuth\Enums\OAuthError;
 use SameOldNick\OAuth\Facades\OAuth;
 use SameOldNick\OAuth\Testing\InteractsWithOAuthCallbacks;
+use SameOldNick\OAuth\Testing\TestOAuthResponse;
 use SameOldNick\OAuth\Tests\TestCase;
 use Workbench\App\Models\User;
 
@@ -48,7 +45,10 @@ class OAuthUnlinkedTest extends TestCase
             'email' => 'testuser@example.com',
         ]);
 
-        $expectedResponse = $this->expectOAuthResponseInstance(UserTrashedResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::UserTrashed),
+            abstract: ErrorResponse::class
+        );
 
         $user = User::factory()->create([
             'email' => 'testuser@example.com',
@@ -69,7 +69,10 @@ class OAuthUnlinkedTest extends TestCase
             'email' => 'testuser@example.com',
         ]);
 
-        $expectedResponse = $this->expectOAuthResponseInstance(MustLoginToLinkResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::MustLoginToLink),
+            abstract: ErrorResponse::class
+        );
 
         $user = User::factory()->create([
             'email' => 'testuser@example.com',
@@ -88,7 +91,10 @@ class OAuthUnlinkedTest extends TestCase
             'email' => 'testuser@example.com',
         ]);
 
-        $expectedResponse = $this->expectOAuthResponseInstance(RegistrationNotAllowedResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::RegistrationNotAllowed),
+            abstract: ErrorResponse::class
+        );
         $this->mockOAuthGate(canRegister: false);
 
         $response = $this->get(route('oauth.callback', ['client' => 'github']));
@@ -102,7 +108,10 @@ class OAuthUnlinkedTest extends TestCase
             'email' => 'testuser@example.com',
         ]);
 
-        $expectedResponse = $this->expectOAuthResponseInstance(CannotLinkResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::CannotLink),
+            abstract: ErrorResponse::class
+        );
         $this->mockOAuthGate(canRegister: true, canLink: false);
 
         $response = $this->get(route('oauth.callback', ['client' => 'github']));
@@ -116,7 +125,10 @@ class OAuthUnlinkedTest extends TestCase
             'email' => 'testuser@example.com',
         ]);
 
-        $expectedResponse = $this->expectOAuthResponseInstance(LoginNotAllowedResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::LoginNotAllowed),
+            abstract: ErrorResponse::class
+        );
         $this->mockOAuthGate(canRegister: true, canLink: true, canLogin: false);
 
         $response = $this->get(route('oauth.callback', ['client' => 'github']));
@@ -144,7 +156,10 @@ class OAuthUnlinkedTest extends TestCase
             'email' => 'testuser1@example.com',
         ]);
 
-        $expectedResponse = $this->expectOAuthResponseInstance(AlreadyLinkedErrorResponse::class);
+        $expectedResponse = $this->expectOAuthResponseInstance(
+            TestOAuthResponse::forOAuthErrorResponse(OAuthError::AlreadyLinked),
+            abstract: ErrorResponse::class
+        );
 
         /** @var User $user1 */
         $user1 = User::factory()->create([
