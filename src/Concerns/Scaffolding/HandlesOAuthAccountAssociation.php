@@ -3,6 +3,7 @@
 namespace SameOldNick\OAuth\Concerns\Scaffolding;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Facades\DB;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Events\AccountConnected;
@@ -16,17 +17,19 @@ trait HandlesOAuthAccountAssociation
      */
     public function associate(Client $client, Authenticatable $user, SocialUser $socialUser, bool $replace = false): void
     {
-        if ($replace) {
-            $oauthProviderModel = ConfigHelper::getConnectedAccountModel();
+        DB::transaction(function () use ($client, $user, $socialUser, $replace): void {
+            if ($replace) {
+                $oauthProviderModel = ConfigHelper::getConnectedAccountModel();
 
-            $oauthProviderModel::where('user_id', $user->getAuthIdentifier())
-                ->where('provider_name', $client->clientName())
-                ->delete();
-        }
+                $oauthProviderModel::where('user_id', $user->getAuthIdentifier())
+                    ->where('provider_name', $client->clientName())
+                    ->delete();
+            }
 
-        $oauthProvider = $this->mapToOAuthProvider($client, $socialUser);
-        $oauthProvider->user()->associate($user);
-        $oauthProvider->save();
+            $oauthProvider = $this->mapToOAuthProvider($client, $socialUser);
+            $oauthProvider->user()->associate($user);
+            $oauthProvider->save();
+        });
 
         AccountConnected::dispatch($user, $client->clientName());
     }
