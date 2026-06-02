@@ -23,7 +23,7 @@ class OAuthUserRegistrar implements OAuthUserRegistrarContract
      */
     public function register(Client $client, SocialUser $socialUser): Authenticatable
     {
-        // Re-use Laravel\Fortify's user creation logic to ensure things likeevents are properly handled.
+        // Re-use Laravel\Fortify's user creation logic to ensure things like events are properly handled.
         // We skip validation since OAuth users won't be providing a password during registration. They can set one later if they want to enable password login.
         $newUser = $this->userCreator->skipPasswordValidation()->create([
             'name' => $socialUser->getName(),
