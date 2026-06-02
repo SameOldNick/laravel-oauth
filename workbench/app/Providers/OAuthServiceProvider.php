@@ -4,26 +4,21 @@ namespace Workbench\App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse as AuthenticateResponseContract;
-use SameOldNick\OAuth\Contracts\Responses\Errors as ErrorResponseContracts;
+use SameOldNick\OAuth\Contracts\Responses\ErrorResponse as ErrorResponseContract;
 use SameOldNick\OAuth\Contracts\Responses\LoggedInResponse as LoggedInResponseContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator as OAuthAccountAssociatorContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState as OAuthAuthenticationStateContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthGate as OAuthGateContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar as OAuthUserRegistrarContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver as OAuthUserResolverContract;
-use Workbench\App\OAuth\Fortify\Responses\AuthenticateResponse;
-use Workbench\App\OAuth\Fortify\Responses\Errors\AlreadyLinkedErrorResponse;
-use Workbench\App\OAuth\Fortify\Responses\Errors\CannotLinkResponse;
-use Workbench\App\OAuth\Fortify\Responses\Errors\LoginNotAllowedResponse;
-use Workbench\App\OAuth\Fortify\Responses\Errors\MustLoginToLinkResponse;
-use Workbench\App\OAuth\Fortify\Responses\Errors\RegistrationNotAllowedResponse;
-use Workbench\App\OAuth\Fortify\Responses\Errors\UserTrashedResponse;
-use Workbench\App\OAuth\Fortify\Responses\LoggedInResponse;
-use Workbench\App\OAuth\Fortify\Services\OAuthAccountAssociator;
-use Workbench\App\OAuth\Fortify\Services\OAuthAuthenticationState;
-use Workbench\App\OAuth\Fortify\Services\OAuthGate;
-use Workbench\App\OAuth\Fortify\Services\OAuthUserRegistrar;
-use Workbench\App\OAuth\Fortify\Services\OAuthUserResolver;
+use VendorName\OAuth\Fortify\Responses\AuthenticateResponse;
+use VendorName\OAuth\Fortify\Responses\ErrorResponse;
+use VendorName\OAuth\Fortify\Responses\LoggedInResponse;
+use VendorName\OAuth\Fortify\Services\OAuthAccountAssociator;
+use VendorName\OAuth\Fortify\Services\OAuthAuthenticationState;
+use VendorName\OAuth\Fortify\Services\OAuthGate;
+use VendorName\OAuth\Fortify\Services\OAuthUserRegistrar;
+use VendorName\OAuth\Fortify\Services\OAuthUserResolver;
 
 class OAuthServiceProvider extends ServiceProvider
 {
@@ -35,12 +30,7 @@ class OAuthServiceProvider extends ServiceProvider
         $this->app->bind(OAuthUserResolverContract::class, OAuthUserResolver::class);
         $this->app->bind(OAuthGateContract::class, OAuthGate::class);
 
-        $this->app->bind(ErrorResponseContracts\AlreadyLinkedErrorResponse::class, AlreadyLinkedErrorResponse::class);
-        $this->app->bind(ErrorResponseContracts\RegistrationNotAllowedResponse::class, RegistrationNotAllowedResponse::class);
-        $this->app->bind(ErrorResponseContracts\CannotLinkResponse::class, CannotLinkResponse::class);
-        $this->app->bind(ErrorResponseContracts\LoginNotAllowedResponse::class, LoginNotAllowedResponse::class);
-        $this->app->bind(ErrorResponseContracts\MustLoginToLinkResponse::class, MustLoginToLinkResponse::class);
-        $this->app->bind(ErrorResponseContracts\UserTrashedResponse::class, UserTrashedResponse::class);
+        $this->app->bind(ErrorResponseContract::class, ErrorResponse::class);
         $this->app->bind(AuthenticateResponseContract::class, AuthenticateResponse::class);
         $this->app->bind(LoggedInResponseContract::class, LoggedInResponse::class);
     }

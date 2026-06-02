@@ -141,12 +141,7 @@ class InstallOAuth extends Command
             $baseSource.'/Services/OAuthUserResolver.php' => $stackDestination.'/Services/OAuthUserResolver.php',
             $baseSource.'/Responses/AuthenticateResponse.php' => $stackDestination.'/Responses/AuthenticateResponse.php',
             $baseSource.'/Responses/LoggedInResponse.php' => $stackDestination.'/Responses/LoggedInResponse.php',
-            $baseSource.'/Responses/Errors/AlreadyLinkedErrorResponse.php' => $stackDestination.'/Responses/Errors/AlreadyLinkedErrorResponse.php',
-            $baseSource.'/Responses/Errors/CannotLinkResponse.php' => $stackDestination.'/Responses/Errors/CannotLinkResponse.php',
-            $baseSource.'/Responses/Errors/LoginNotAllowedResponse.php' => $stackDestination.'/Responses/Errors/LoginNotAllowedResponse.php',
-            $baseSource.'/Responses/Errors/MustLoginToLinkResponse.php' => $stackDestination.'/Responses/Errors/MustLoginToLinkResponse.php',
-            $baseSource.'/Responses/Errors/RegistrationNotAllowedResponse.php' => $stackDestination.'/Responses/Errors/RegistrationNotAllowedResponse.php',
-            $baseSource.'/Responses/Errors/UserTrashedResponse.php' => $stackDestination.'/Responses/Errors/UserTrashedResponse.php',
+            $baseSource.'/Responses/ErrorResponse.php' => $stackDestination.'/Responses/ErrorResponse.php',
         ];
     }
 
@@ -168,12 +163,7 @@ class InstallOAuth extends Command
             $baseSource.'/Services/OAuthUserResolver.php' => $stackDestination.'/Services/OAuthUserResolver.php',
             $baseSource.'/Responses/AuthenticateResponse.php' => $stackDestination.'/Responses/AuthenticateResponse.php',
             $baseSource.'/Responses/LoggedInResponse.php' => $stackDestination.'/Responses/LoggedInResponse.php',
-            $baseSource.'/Responses/Errors/AlreadyLinkedErrorResponse.php' => $stackDestination.'/Responses/Errors/AlreadyLinkedErrorResponse.php',
-            $baseSource.'/Responses/Errors/CannotLinkResponse.php' => $stackDestination.'/Responses/Errors/CannotLinkResponse.php',
-            $baseSource.'/Responses/Errors/LoginNotAllowedResponse.php' => $stackDestination.'/Responses/Errors/LoginNotAllowedResponse.php',
-            $baseSource.'/Responses/Errors/MustLoginToLinkResponse.php' => $stackDestination.'/Responses/Errors/MustLoginToLinkResponse.php',
-            $baseSource.'/Responses/Errors/RegistrationNotAllowedResponse.php' => $stackDestination.'/Responses/Errors/RegistrationNotAllowedResponse.php',
-            $baseSource.'/Responses/Errors/UserTrashedResponse.php' => $stackDestination.'/Responses/Errors/UserTrashedResponse.php',
+            $baseSource.'/Responses/ErrorResponse.php' => $stackDestination.'/Responses/ErrorResponse.php',
         ];
     }
 

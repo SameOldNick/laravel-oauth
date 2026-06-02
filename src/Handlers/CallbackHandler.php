@@ -2,22 +2,22 @@
 
 namespace SameOldNick\OAuth\Handlers;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
+use SameOldNick\OAuth\Concerns\CreatesConnectedAccountResponses;
 use SameOldNick\OAuth\Contracts\Handlers\OAuthCallbackHandler;
-use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse;
-use SameOldNick\OAuth\Contracts\Responses\Errors;
-use SameOldNick\OAuth\Contracts\Responses\LoggedInResponse;
 use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator;
 use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState;
 use SameOldNick\OAuth\Contracts\Services\OAuthGate;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Support\Facades\Log;
-use Laravel\Socialite\Contracts\User as SocialUser;
+use SameOldNick\OAuth\Enums\OAuthError;
 
 class CallbackHandler implements OAuthCallbackHandler
 {
+    use CreatesConnectedAccountResponses;
+
     /**
      * Initializes handler dependencies.
      */
@@ -60,13 +60,13 @@ class CallbackHandler implements OAuthCallbackHandler
 
             if (! $this->gate->canLink($client, $socialUser, $currentUser)) {
                 // Linking not allowed by gate
-                return $this->cannotLinkResponse($client, $socialUser, $currentUser);
+                return $this->createErrorResponse(OAuthError::CannotLink, $client, $socialUser, $currentUser);
             }
 
             // User is linking an account that's already linked to their profile - just update the association
             $this->accountAssociator->associate($client, $linkedUser, $socialUser, true);
 
-            return $this->loggedInResponse($client, $socialUser, $linkedUser);
+            return $this->createLoggedInResponse($client, $socialUser, $linkedUser);
         }
 
         /*
@@ -75,10 +75,10 @@ class CallbackHandler implements OAuthCallbackHandler
 
         if (! $this->gate->canLogin($client, $socialUser, $linkedUser)) {
             // Login not allowed by gate
-            return $this->loginNotAllowedResponse($client, $socialUser, $linkedUser);
+            return $this->createErrorResponse(OAuthError::LoginNotAllowed, $client, $socialUser, $linkedUser);
         }
 
-        return $this->authenticateResponse($client, $socialUser, $linkedUser);
+        return $this->createAuthenticateResponse($client, $socialUser, $linkedUser);
     }
 
     /**
@@ -97,7 +97,7 @@ class CallbackHandler implements OAuthCallbackHandler
                 // No existing user with that email - we can try to register a new user
                 if (! $this->gate->canRegister($client, $socialUser)) {
                     // Registration not allowed by gate
-                    return $this->registrationNotAllowedResponse($client, $socialUser);
+                    return $this->createErrorResponse(OAuthError::RegistrationNotAllowed, $client, $socialUser);
                 }
 
                 $user = $this->userRegistrar->register($socialUser);
@@ -105,7 +105,7 @@ class CallbackHandler implements OAuthCallbackHandler
 
             if (! $this->gate->canLink($client, $socialUser, $user)) {
                 // Linking not allowed by gate
-                return $this->cannotLinkResponse($client, $socialUser, $user);
+                return $this->createErrorResponse(OAuthError::CannotLink, $client, $socialUser, $user);
             }
 
             // Link the new user to the OAuth account
@@ -113,10 +113,10 @@ class CallbackHandler implements OAuthCallbackHandler
 
             if (! $this->gate->canLogin($client, $socialUser, $user)) {
                 // Login not allowed by gate
-                return $this->loginNotAllowedResponse($client, $socialUser, $user);
+                return $this->createErrorResponse(OAuthError::LoginNotAllowed, $client, $socialUser, $user);
             }
 
-            return $this->authenticateResponse($client, $socialUser, $user);
+            return $this->createAuthenticateResponse($client, $socialUser, $user);
         }
 
         /*
@@ -128,54 +128,11 @@ class CallbackHandler implements OAuthCallbackHandler
 
         if (! $this->gate->canLink($client, $socialUser, $user)) {
             // Linking not allowed by gate
-            return $this->cannotLinkResponse($client, $socialUser, $user);
+            return $this->createErrorResponse(OAuthError::CannotLink, $client, $socialUser, $user);
         }
 
         $this->accountAssociator->associate($client, $user, $socialUser, true);
 
-        return $this->loggedInResponse($client, $socialUser, $user);
-    }
-
-    /**
-     * Authenticate response
-     *
-     * @return void
-     */
-    protected function authenticateResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
-    {
-        $response = app(AuthenticateResponse::class)->create($client, $socialUser, $user);
-
-        return $response;
-    }
-
-    /**
-     * Response when user is logged in
-     */
-    protected function loggedInResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
-    {
-        $response = app(LoggedInResponse::class)->create($client, $socialUser, $user);
-
-        return $response;
-    }
-
-    protected function registrationNotAllowedResponse(Client $client, SocialUser $socialUser)
-    {
-        $response = app(Errors\RegistrationNotAllowedResponse::class)->create($client, $socialUser);
-
-        return $response;
-    }
-
-    protected function cannotLinkResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
-    {
-        $response = app(Errors\CannotLinkResponse::class)->create($client, $socialUser, $user);
-
-        return $response;
-    }
-
-    protected function loginNotAllowedResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
-    {
-        $response = app(Errors\LoginNotAllowedResponse::class)->create($client, $socialUser, $user);
-
-        return $response;
+        return $this->createLoggedInResponse($client, $socialUser, $user);
     }
 }

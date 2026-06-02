@@ -8,15 +8,18 @@ use Illuminate\Support\Facades\Log;
 use Laravel\Fortify\Features;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
-use SameOldNick\OAuth\Contracts\Responses\Errors;
+use SameOldNick\OAuth\Concerns\CreatesConnectedAccountResponses;
 use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState;
 use SameOldNick\OAuth\Contracts\Services\OAuthGate as OAuthGateContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver;
+use SameOldNick\OAuth\Enums\OAuthError;
 use SameOldNick\OAuth\Exceptions\OAuthGateFailureException;
 use SameOldNick\OAuth\Support\ConfigHelper;
 
 class OAuthGate implements OAuthGateContract
 {
+    use CreatesConnectedAccountResponses;
+
     public function __construct(
         protected OAuthAuthenticationState $authenticationState,
         protected OAuthUserResolver $userResolver
@@ -52,7 +55,7 @@ class OAuthGate implements OAuthGateContract
                     'provider' => $client->clientName(),
                 ]);
 
-                OAuthGateFailureException::throwWithResponse(fn () => $this->userTrashedResponse($client, $socialUser, $user));
+                OAuthGateFailureException::throwWithResponse(fn () => $this->createErrorResponse(OAuthError::UserTrashed, $client, $socialUser, $user));
             } else {
                 // Email exists, user is active - cannot register because email is already taken
                 Log::info('OAuth login attempt with existing email', [
@@ -60,7 +63,7 @@ class OAuthGate implements OAuthGateContract
                     'provider' => $client->clientName(),
                 ]);
 
-                OAuthGateFailureException::throwWithResponse(fn () => $this->mustLoginToLinkResponse($client, $socialUser, $user));
+                OAuthGateFailureException::throwWithResponse(fn () => $this->createErrorResponse(OAuthError::MustLoginToLink, $client, $socialUser, $user));
             }
         }
 
@@ -76,7 +79,7 @@ class OAuthGate implements OAuthGateContract
         if (! $this->authenticationState->isLoggedIn() && $user->password !== null) {
             // Email exists and has a password
             OAuthGateFailureException::throwWithResponse(
-                fn () => $this->mustLoginToLinkResponse($client, $socialUser, $user),
+                fn () => $this->createErrorResponse(OAuthError::MustLoginToLink, $client, $socialUser, $user),
                 'You must log in to link this OAuth account.'
             );
         }
@@ -86,7 +89,7 @@ class OAuthGate implements OAuthGateContract
 
         if ($linkedUser && (string) $linkedUser->getAuthIdentifier() !== (string) $user->getAuthIdentifier()) {
             OAuthGateFailureException::throwWithResponse(
-                fn () => $this->alreadyLinkedErrorResponse($client, $socialUser, $user),
+                fn () => $this->createErrorResponse(OAuthError::AlreadyLinked, $client, $socialUser, $user),
                 'This OAuth account is already linked to another user.'
             );
         }
@@ -118,35 +121,5 @@ class OAuthGate implements OAuthGateContract
         $userModel = ConfigHelper::getUserModel();
 
         return in_array(SoftDeletes::class, class_uses($userModel), true);
-    }
-
-    /**
-     * Response when user must log in to link OAuth (email exists but not linked)
-     */
-    protected function mustLoginToLinkResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
-    {
-        $response = app(Errors\MustLoginToLinkResponse::class)->create($client, $socialUser, $user);
-
-        return $response;
-    }
-
-    /**
-     * Response when user is soft-deleted
-     */
-    protected function userTrashedResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
-    {
-        $response = app(Errors\UserTrashedResponse::class)->create($client, $socialUser, $user);
-
-        return $response;
-    }
-
-    /**
-     * Response when OAuth account is already linked to another user
-     */
-    protected function alreadyLinkedErrorResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
-    {
-        $response = app(Errors\AlreadyLinkedErrorResponse::class)->create($client, $socialUser, $user);
-
-        return $response;
     }
 }
