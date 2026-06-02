@@ -78,7 +78,7 @@ class OAuthUserRegistrar implements OAuthUserRegistrarContract
         return match ($client->clientName()) {
             // TODO: Use GitHub /user/emails endpoint to check if email is verified, since the main /user endpoint does not guarantee that the email is verified. For now, we assume it's not verified to be safe.
             'github' => false, // The GitHub /user API endpoint does not guarantee that the email is verified.
-            'google' => $socialUser['verified_email'] ?? false, // Google provides an 'email_verified' field we can check.
+            'google' => $socialUser['email_verified'] ?? false, // Google provides an 'email_verified' field we can check.
             'facebook' => true, // Facebook only returns verified emails, so we can trust that it's verified.
             'twitter' => false, // No guarantee that Twitter emails are verified, and they don't provide a way to check, so we assume it's not verified.
             default => false, // For other providers, we can't be sure, so we assume it's not verified.
