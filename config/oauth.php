@@ -81,4 +81,14 @@ return [
             'as' => 'callback',
         ],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Behavior Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Control gate behavior for registration and account linking.
+    |
+    */
+    'email_verification_required' => env('OAUTH_EMAIL_VERIFICATION_REQUIRED', false),
 ];

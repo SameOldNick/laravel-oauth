@@ -3,6 +3,7 @@
 namespace VendorName\OAuth\Custom\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use Laravel\Socialite\Contracts\User as SocialUser;
@@ -87,6 +88,15 @@ class OAuthGate implements OAuthGateContract
                 fn () => $this->createErrorResponse(OAuthError::AlreadyLinked, $client, $socialUser, $user),
                 'This OAuth account is already linked to another user.'
             );
+        }
+
+        if (config('oauth.email_verification_required')) {
+            if ($user instanceof MustVerifyEmail && ! $user->hasVerifiedEmail()) {
+                OAuthGateFailureException::throwWithResponse(
+                    fn () => $this->createErrorResponse(OAuthError::EmailVerificationRequired, $client, $socialUser, $user),
+                    'You must verify your email before linking this OAuth account.'
+                );
+            }
         }
 
         return true;

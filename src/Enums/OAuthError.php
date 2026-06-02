@@ -10,4 +10,5 @@ enum OAuthError: string
     case CannotLink = 'cannot_link';
     case LoginNotAllowed = 'login_not_allowed';
     case UserTrashed = 'user_trashed';
+    case EmailVerificationRequired = 'email_verification_required';
 }
