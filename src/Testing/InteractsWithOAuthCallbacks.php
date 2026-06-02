@@ -173,7 +173,7 @@ trait InteractsWithOAuthCallbacks
      * @return TestOAuthResponse The known response instance that the mock will return.
      */
     protected function expectOAuthResponseInstance(
-        string $responseClassOrInstance,
+        string|object $responseClassOrInstance,
         ?\Closure $withArgs = null,
         ?string $abstract = null
     ): TestOAuthResponse {
@@ -181,9 +181,13 @@ trait InteractsWithOAuthCallbacks
             ? TestOAuthResponse::forOAuthResponseClass($responseClassOrInstance)
             : $responseClassOrInstance;
 
-        $mock = $this->createMockOAuthResponse(get_class($response), $response, $withArgs);
+        $mockClass = is_string($responseClassOrInstance)
+            ? $responseClassOrInstance
+            : ($abstract ?? get_class($response));
 
-        $this->app->instance($abstract ?? get_class($response), $mock);
+        $mock = $this->createMockOAuthResponse($mockClass, $response, $withArgs);
+
+        $this->app->instance($abstract ?? $mockClass, $mock);
 
         return $response;
     }
