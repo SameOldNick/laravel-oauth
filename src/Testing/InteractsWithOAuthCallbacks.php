@@ -9,9 +9,11 @@ use Illuminate\Testing\TestCase;
 use Illuminate\Testing\TestResponse;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use Mockery\MockInterface;
+use SameOldNick\OAuth\Contracts\Responses\ErrorResponse;
 use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator;
 use SameOldNick\OAuth\Contracts\Services\OAuthGate;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver;
+use SameOldNick\OAuth\Enums\OAuthError;
 use SameOldNick\OAuth\Facades\OAuth;
 
 /**
@@ -128,16 +130,35 @@ trait InteractsWithOAuthCallbacks
     /**
      * Assert that a specific OAuth response class was returned during the callback handling.
      *
-     * @param  class-string  $responseClass  The class name of the expected response.
+     * @param  class-string|object  $responseClassOrInstance  The class name or instance of the expected response.
      * @return TestCase
      */
-    protected function assertOAuthResponseReturned(string $responseClass): static
+    protected function assertOAuthResponseReturned($responseClassOrInstance): static
     {
-        $response = $this->createMockOAuthResponse($responseClass, app($responseClass)->create(...));
+        $response = is_string($responseClassOrInstance)
+            ? $this->createMockOAuthResponse($responseClassOrInstance, app($responseClassOrInstance)->create(...))
+            : $responseClassOrInstance;
 
-        $this->app->instance($responseClass, $response);
+        $this->app->instance(get_class($response), $response);
 
         return $this;
+    }
+
+    /**
+     * Helper method to mock an error response for a specific OAuth error.
+     *
+     * @param  OAuthError  $error  The OAuth error to create a mock response for.
+     * @return MockInterface The mocked error response contract.
+     */
+    protected function mockErrorResponse(OAuthError $error)
+    {
+        return $this->createMockOAuthResponse(
+            responseClass: ErrorResponse::class,
+            return: app()->make(ErrorResponse::class)->create(...),
+            withArgs: function (OAuthError $givenError) use ($error) {
+                return $givenError === $error;
+            }
+        );
     }
 
     /**
@@ -146,18 +167,23 @@ trait InteractsWithOAuthCallbacks
      * This lets tests assert the callback result originated from the response contract
      * without relying on transport details such as redirects.
      *
-     * @param  class-string  $responseClass
+     * @param  class-string|object  $responseClassOrInstance  The class name or instance of the OAuth response contract to mock.
      * @param  null|\Closure(...mixed):bool  $withArgs
+     * @param  string|null  $abstract  Optional abstract type to bind the mock to in the container; defaults to the response class.
+     * @return TestOAuthResponse The known response instance that the mock will return.
      */
     protected function expectOAuthResponseInstance(
-        string $responseClass,
+        string $responseClassOrInstance,
         ?\Closure $withArgs = null,
+        ?string $abstract = null
     ): TestOAuthResponse {
-        $response = TestOAuthResponse::forOAuthResponseClass($responseClass);
+        $response = is_string($responseClassOrInstance)
+            ? TestOAuthResponse::forOAuthResponseClass($responseClassOrInstance)
+            : $responseClassOrInstance;
 
-        $mock = $this->createMockOAuthResponse($responseClass, $response, $withArgs);
+        $mock = $this->createMockOAuthResponse(get_class($response), $response, $withArgs);
 
-        $this->app->instance($responseClass, $mock);
+        $this->app->instance($abstract ?? get_class($response), $mock);
 
         return $response;
     }
@@ -170,6 +196,15 @@ trait InteractsWithOAuthCallbacks
         $this->assertSame(
             $expected,
             $response->baseResponse,
+            'Expected callback response to be the same instance produced by the OAuth response contract.'
+        );
+    }
+
+    protected function assertOAuthResponseContentReturned(TestResponse $response, Response $expected): void
+    {
+        $this->assertEquals(
+            $expected->getContent(),
+            $response->baseResponse->getContent(),
             'Expected callback response to be the same instance produced by the OAuth response contract.'
         );
     }
