@@ -6,7 +6,6 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
-use Laravel\Fortify\Features;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Concerns\CreatesConnectedAccountResponses;
@@ -33,7 +32,7 @@ class OAuthGate implements OAuthGateContract
      */
     public function canRegister(Client $client, SocialUser $socialUser): bool
     {
-        if (! Features::enabled(Features::registration())) {
+        if (! config('oauth.allow_registration')) {
             return false;
         }
 

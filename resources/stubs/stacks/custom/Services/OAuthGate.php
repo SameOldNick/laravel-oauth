@@ -32,6 +32,10 @@ class OAuthGate implements OAuthGateContract
      */
     public function canRegister(Client $client, SocialUser $socialUser): bool
     {
+        if (! config('oauth.allow_registration')) {
+            return false;
+        }
+
         $userModel = ConfigHelper::getUserModel();
         $emailField = ConfigHelper::getUserEmailField();
 

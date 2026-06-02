@@ -90,5 +90,6 @@ return [
     | Control gate behavior for registration and account linking.
     |
     */
+    'allow_registration' => env('OAUTH_ALLOW_REGISTRATION', true),
     'email_verification_required' => env('OAUTH_EMAIL_VERIFICATION_REQUIRED', false),
 ];

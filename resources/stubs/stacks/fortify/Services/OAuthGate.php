@@ -32,7 +32,7 @@ class OAuthGate implements OAuthGateContract
      */
     public function canRegister(Client $client, SocialUser $socialUser): bool
     {
-        if (! Features::enabled(Features::registration())) {
+        if (! config('oauth.allow_registration')) {
             return false;
         }
 
