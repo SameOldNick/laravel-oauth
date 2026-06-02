@@ -212,7 +212,7 @@ trait InteractsWithOAuthCallbacks
     /**
      * Helper method to associate a user with an OAuth account for testing purposes.
      *
-     * @param  User  $user  The user to associate the OAuth account with.
+     * @param  Authenticatable  $user  The user to associate the OAuth account with.
      * @param  string  $clientName  The name of the OAuth client (e.g., 'github').
      * @param  SocialUser|null  $socialUser  Optional social user data to use for the association.
      */
