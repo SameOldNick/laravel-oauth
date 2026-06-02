@@ -31,11 +31,7 @@ class OAuthGateFailureException extends Exception
      */
     public function render(Request $request): mixed
     {
-        $response = $this->response;
-
-        if (is_callable($response)) {
-            $response = $response($request);
-        }
+        $response = value($this->response, $request);
 
         return $response ?? response(__('oauth::messages.gate_check_failed'), 403);
     }
