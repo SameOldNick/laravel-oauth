@@ -22,11 +22,6 @@ class TestCase extends Orchestra
      */
     protected $enablesPackageDiscoveries = true;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-    }
-
     public function getEnvironmentSetUp($app)
     {
         tap($app['config'], function (Repository $config) {
