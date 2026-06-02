@@ -6,6 +6,7 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Socialite\Contracts\User as SocialUser;
+use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar as OAuthUserRegistrarContract;
 
 class OAuthUserRegistrar implements OAuthUserRegistrarContract
@@ -19,7 +20,7 @@ class OAuthUserRegistrar implements OAuthUserRegistrarContract
     /**
      * {@inheritDoc}
      */
-    public function register(SocialUser $socialUser): Authenticatable
+    public function register(Client $client, SocialUser $socialUser): Authenticatable
     {
         // Re-use Laravel\Fortify's user creation logic to ensure things likeevents are properly handled.
         // We skip validation since OAuth users won't be providing a password during registration. They can set one later if they want to enable password login.

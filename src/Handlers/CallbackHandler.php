@@ -100,7 +100,7 @@ class CallbackHandler implements OAuthCallbackHandler
                     return $this->createErrorResponse(OAuthError::RegistrationNotAllowed, $client, $socialUser);
                 }
 
-                $user = $this->userRegistrar->register($socialUser);
+                $user = $this->userRegistrar->register($client, $socialUser);
             }
 
             if (! $this->gate->canLink($client, $socialUser, $user)) {
