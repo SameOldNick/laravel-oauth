@@ -31,6 +31,12 @@ class OAuthUserRegistrar implements OAuthUserRegistrarContract
             'password' => null,
         ]);
 
+        // Guard against user creators/casts that may still persist a non-null password.
+        if ($newUser->password !== null) {
+            $newUser->forceFill(['password' => null])->save();
+            $newUser->refresh();
+        }
+
         // Needs to fire so things like emails can be sent.
         event(new Registered($newUser));
 
