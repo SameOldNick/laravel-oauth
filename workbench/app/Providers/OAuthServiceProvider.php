@@ -11,14 +11,14 @@ use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState as OAuthAuthen
 use SameOldNick\OAuth\Contracts\Services\OAuthGate as OAuthGateContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar as OAuthUserRegistrarContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver as OAuthUserResolverContract;
-use VendorName\OAuth\Fortify\Responses\AuthenticateResponse;
-use VendorName\OAuth\Fortify\Responses\ErrorResponse;
-use VendorName\OAuth\Fortify\Responses\LoggedInResponse;
-use VendorName\OAuth\Fortify\Services\OAuthAccountAssociator;
-use VendorName\OAuth\Fortify\Services\OAuthAuthenticationState;
-use VendorName\OAuth\Fortify\Services\OAuthGate;
-use VendorName\OAuth\Fortify\Services\OAuthUserRegistrar;
-use VendorName\OAuth\Fortify\Services\OAuthUserResolver;
+use Workbench\App\OAuth\Fortify\Responses\AuthenticateResponse;
+use Workbench\App\OAuth\Fortify\Responses\ErrorResponse;
+use Workbench\App\OAuth\Fortify\Responses\LoggedInResponse;
+use Workbench\App\OAuth\Fortify\Services\OAuthAccountAssociator;
+use Workbench\App\OAuth\Fortify\Services\OAuthAuthenticationState;
+use Workbench\App\OAuth\Fortify\Services\OAuthGate;
+use Workbench\App\OAuth\Fortify\Services\OAuthUserRegistrar;
+use Workbench\App\OAuth\Fortify\Services\OAuthUserResolver;
 
 class OAuthServiceProvider extends ServiceProvider
 {
