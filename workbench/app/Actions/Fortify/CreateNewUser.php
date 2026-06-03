@@ -4,42 +4,12 @@ namespace Workbench\App\Actions\Fortify;
 
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Fortify\Contracts\CreatesNewUsers as CreatesNewUsersContract;
 use Workbench\App\Models\User;
 
 class CreateNewUser implements CreatesNewUsersContract
 {
-    private bool $skipPasswordValidation = false;
-
-    public function skipsPasswordValidation(): bool
-    {
-        return $this->skipPasswordValidation;
-    }
-
-    /**
-     * Skip password validation.
-     *
-     * @return $this
-     */
-    public function skipPasswordValidation(): static
-    {
-        $this->skipPasswordValidation = true;
-
-        return $this;
-    }
-
-    /**
-     * Don't skip validation.
-     *
-     * @return $this
-     */
-    public function dontSkipPasswordValidation(): static
-    {
-        $this->skipPasswordValidation = false;
-
-        return $this;
-    }
-
     /**
      * Validate and create a newly registered user.
      *
@@ -47,7 +17,7 @@ class CreateNewUser implements CreatesNewUsersContract
      */
     public function create(array $input): User
     {
-        $rules = [
+        Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
@@ -56,13 +26,8 @@ class CreateNewUser implements CreatesNewUsersContract
                 'max:255',
                 Rule::unique(User::class),
             ],
-        ];
-
-        if (! $this->skipsPasswordValidation()) {
-            $rules['password'] = 'required|string|min:8';
-        }
-
-        Validator::make($input, $rules)->validate();
+            'password' => ['required', 'string', Password::default(), 'confirmed'],
+        ])->validate();
 
         return $this->createUser($input);
     }

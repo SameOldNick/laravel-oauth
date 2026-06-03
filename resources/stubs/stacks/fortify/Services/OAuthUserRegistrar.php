@@ -55,24 +55,28 @@ class OAuthUserRegistrar implements OAuthUserRegistrarContract
         $min = $rules['min'] ?? 8;
         $max = $rules['max'] ?? 64;
 
+        // If all rules are false, we should include all character types to ensure we can generate a valid password.
+        // Otherwise, the password salt will be empty and cause an error when generating the password.
+        $default = ! $rules['letters'] && ! $rules['numbers'] && ! $rules['symbols'];
+
         for ($n = 1; $n <= 10; $n++) {
             try {
                 $password = Str::password(
                     random_int($min, $max),
-                    letters: $rules['letters'] ?? false,
-                    numbers: $rules['numbers'] ?? false,
-                    symbols: $rules['symbols'] ?? false,
+                    letters: $rules['letters'] ?: $default,
+                    numbers: $rules['numbers'] ?: $default,
+                    symbols: $rules['symbols'] ?: $default,
                 );
 
-                $rule->passes('password', $password);
-
-                return $password;
+                if ($rule->passes('password', $password)) {
+                    return $password;
+                }
             } catch (\Exception $e) {
                 // If password doesn't meet the rules, try again (up to 10 times)
             }
         }
 
         // If we couldn't generate a valid password after 10 attempts, just return a random string of the minimum length.
-        return Str::random($min);
+        return Str::password(random_int($min, $max));
     }
 }
