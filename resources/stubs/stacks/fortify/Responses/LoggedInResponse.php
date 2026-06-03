@@ -20,6 +20,6 @@ class LoggedInResponse implements LoggedInResponseContract
 
         return redirect()
             ->intended(Fortify::redirects('login'))
-            ->with('message', __('oauth::messages.successfully_signed_in', ['provider' => $client->getName()]));
+            ->with('success', __('oauth::messages.successfully_signed_in', ['provider' => $client->getName()]));
     }
 }
