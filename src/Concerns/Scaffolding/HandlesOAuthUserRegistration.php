@@ -5,6 +5,7 @@ namespace SameOldNick\OAuth\Concerns\Scaffolding;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Model;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
 
@@ -71,7 +72,8 @@ trait HandlesOAuthUserRegistration
      */
     protected function clearUserPassword(Authenticatable $user): void
     {
-        if ($user->password !== null) {
+        /** @var Model $user */
+        if ($user->getAttribute('password') !== null) {
             $user->forceFill(['password' => null])->save();
             $user->refresh();
         }
