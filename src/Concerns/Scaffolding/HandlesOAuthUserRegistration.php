@@ -16,16 +16,10 @@ trait HandlesOAuthUserRegistration
     protected function finalizeOAuthRegistration(Client $client, SocialUser $socialUser, Authenticatable $newUser): Authenticatable
     {
         // Guard against user creators/casts that may still persist a non-null password.
-        if ($newUser->password !== null) {
-            $newUser->forceFill(['password' => null])->save();
-            $newUser->refresh();
-        }
+        $this->clearUserPassword($newUser);
 
-        if ($this->isEmailVerificationRequired() &&
-            $newUser instanceof MustVerifyEmail &&
-            $this->isEmailVerifiedByOAuthProvider($client, $socialUser)) {
-            $newUser->markEmailAsVerified();
-        }
+        // If the provider indicates that the email is verified, we can skip the email verification process for this user.
+        $this->setUserEmailVerified($client, $socialUser, $newUser);
 
         // Needs to fire so things like emails can be sent.
         event(new Registered($newUser));
@@ -35,6 +29,18 @@ trait HandlesOAuthUserRegistration
         }
 
         return $newUser;
+    }
+
+    /**
+     * Mark the user's email as verified if the OAuth provider indicates that the email is verified and the user model requires email verification.
+     */
+    protected function setUserEmailVerified(Client $client, SocialUser $socialUser, Authenticatable $user): void
+    {
+        if ($this->isEmailVerificationRequired() &&
+            $user instanceof MustVerifyEmail &&
+            $this->isEmailVerifiedByOAuthProvider($client, $socialUser)) {
+            $user->markEmailAsVerified();
+        }
     }
 
     /**
@@ -58,5 +64,16 @@ trait HandlesOAuthUserRegistration
             'twitter' => false, // No guarantee that Twitter emails are verified, and they don't provide a way to check, so we assume it's not verified.
             default => false, // For other providers, we can't be sure, so we assume it's not verified.
         };
+    }
+
+    /**
+     * Clear the user's password to prevent them from being able to log in with a password if the user creator/cast set a non-null password.
+     */
+    protected function clearUserPassword(Authenticatable $user): void
+    {
+        if ($user->password !== null) {
+            $user->forceFill(['password' => null])->save();
+            $user->refresh();
+        }
     }
 }
