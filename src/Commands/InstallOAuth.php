@@ -50,11 +50,11 @@ class InstallOAuth extends Command
         $stack = strtolower((string) $this->option('stack'));
 
         if (! $stack) {
-            $stack = $this->choice('Which authentication stack would you like to scaffold?', ['fortify', 'custom'], 0);
+            $stack = $this->choice('Which authentication stack would you like to scaffold?', $this->getSupportedStacks(), 0);
         }
 
-        if (! in_array($stack, ['fortify', 'custom'], true)) {
-            throw new InvalidArgumentException("Unsupported stack [{$stack}]. Supported stacks: fortify, custom.");
+        if (! in_array($stack, $this->getSupportedStacks(), true)) {
+            throw new InvalidArgumentException("Unsupported stack [{$stack}]. Supported stacks: ".implode(', ', $this->getSupportedStacks()).'.');
         }
 
         $force = (bool) $this->option('force');
@@ -109,6 +109,14 @@ class InstallOAuth extends Command
         $this->line('Next steps: customize generated classes under app/OAuth and run your test suite.');
 
         return self::SUCCESS;
+    }
+
+    /**
+     * Get the list of supported authentication stacks for scaffolding.
+     */
+    protected function getSupportedStacks(): array
+    {
+        return ['fortify', 'custom'];
     }
 
     /**
