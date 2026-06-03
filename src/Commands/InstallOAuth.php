@@ -22,7 +22,7 @@ class InstallOAuth extends Command
                         {--app-namespace= : Root namespace for generated classes (defaults to application namespace)}
                         {--skip-provider : Skip generation of service provider that binds interfaces to implementations}
                         {--skip-registration : Skip auto-registration of generated service provider in bootstrap/providers.php}
-                        {--stack=fortify : Authentication stack preset to scaffold}';
+                        {--stack= : Authentication stack preset to scaffold}';
 
     /**
      * The console command description.
@@ -48,6 +48,10 @@ class InstallOAuth extends Command
     public function handle(): int
     {
         $stack = strtolower((string) $this->option('stack'));
+
+        if (! $stack) {
+            $stack = $this->choice('Which authentication stack would you like to scaffold?', ['fortify', 'custom'], 0);
+        }
 
         if (! in_array($stack, ['fortify', 'custom'], true)) {
             throw new InvalidArgumentException("Unsupported stack [{$stack}]. Supported stacks: fortify, custom.");
