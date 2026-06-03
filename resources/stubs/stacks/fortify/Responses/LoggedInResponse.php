@@ -18,8 +18,8 @@ class LoggedInResponse implements LoggedInResponseContract
     {
         OAuthSignedIn::dispatch($user, $client->clientName());
 
-        // toast(__('oauth::messages.successfully_signed_in', ['provider' => $client->getName()]), 'success');
-
-        return redirect()->intended(Fortify::redirects('login'));
+        return redirect()
+            ->intended(Fortify::redirects('login'))
+            ->with('message', __('oauth::messages.successfully_signed_in', ['provider' => $client->getName()]));
     }
 }

@@ -19,6 +19,6 @@ class LoggedInResponse implements LoggedInResponseContract
 
         return redirect()
             ->intended('/')
-            ->with('success', __('oauth::messages.logged_in_successfully', ['provider' => $client->getName()]));
+            ->with('success', __('oauth::messages.successfully_signed_in', ['provider' => $client->getName()]));
     }
 }
