@@ -7,10 +7,7 @@ use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Concerns\CreatesConnectedAccountResponses;
 use SameOldNick\OAuth\Contracts\Handlers\OAuthCallbackHandler;
-use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator;
 use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState;
-use SameOldNick\OAuth\Contracts\Services\OAuthGate;
-use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar;
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver;
 use SameOldNick\OAuth\Handlers\Pipeline\OAuthCallbackPipeline;
 use SameOldNick\OAuth\Handlers\Pipeline\OAuthCallbackPipelineContext;
@@ -29,9 +26,6 @@ class CallbackHandler implements OAuthCallbackHandler
      * Initializes handler dependencies.
      */
     public function __construct(
-        protected readonly OAuthGate $gate,
-        protected readonly OAuthUserRegistrar $userRegistrar,
-        protected readonly OAuthAccountAssociator $accountAssociator,
         protected readonly OAuthAuthenticationState $authenticationState,
         protected readonly OAuthUserResolver $userResolver,
     ) {
