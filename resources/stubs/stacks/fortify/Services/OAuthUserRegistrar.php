@@ -3,6 +3,8 @@
 namespace VendorName\OAuth\Fortify\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password;
 use Laravel\Fortify\Contracts\CreatesNewUsers;
 use Laravel\Socialite\Contracts\User as SocialUser;
 use SameOldNick\OAuth\Clients\Client;
@@ -25,15 +27,52 @@ class OAuthUserRegistrar implements OAuthUserRegistrarContract
     public function register(Client $client, SocialUser $socialUser): Authenticatable
     {
         // Re-use Laravel\Fortify's user creation logic to ensure things like events are properly handled.
-        // We skip validation since OAuth users won't be providing a password during registration. They can set one later if they want to enable password login.
-        $newUser = $this->userCreator->skipPasswordValidation()->create([
+
+        $password = $this->generateRandomPassword();
+
+        $newUser = $this->userCreator->create([
             'name' => $socialUser->getName(),
             'email' => $socialUser->getEmail(),
-            // Set password to null since they won't be using it to log in, and to indicate that the account was created via OAuth.
-            // They can set a password later if they want to enable password login.
-            'password' => null,
+            // We need to provide a password, even if the user won't be using it, because Laravel\Fortify's default user creation logic requires it.
+            // We'll generate a random password that meets the default password requirements.
+            // The password will be set to null in the finalizeOAuthRegistration method, so the user won't be able to use it to log in without going through a password reset flow.
+            'password' => $password,
+            'password_confirmation' => $password,
         ]);
 
         return $this->finalizeOAuthRegistration($client, $socialUser, $newUser);
+    }
+
+    /**
+     * Generates a random password that meets the default Laravel\Fortify password requirements.
+     * If it fails to generate a valid password after 10 attempts, it will return a random string of the minimum length.
+     */
+    protected function generateRandomPassword(): string
+    {
+        $rule = Password::default();
+        $rules = $rule->appliedRules();
+
+        $min = $rules['min'] ?? 8;
+        $max = $rules['max'] ?? 64;
+
+        for ($n = 1; $n <= 10; $n++) {
+            try {
+                $password = Str::password(
+                    random_int($min, $max),
+                    letters: $rules['letters'] ?? false,
+                    numbers: $rules['numbers'] ?? false,
+                    symbols: $rules['symbols'] ?? false,
+                );
+
+                $rule->passes('password', $password);
+
+                return $password;
+            } catch (\Exception $e) {
+                // If password doesn't meet the rules, try again (up to 10 times)
+            }
+        }
+
+        // If we couldn't generate a valid password after 10 attempts, just return a random string of the minimum length.
+        return Str::random($min);
     }
 }
