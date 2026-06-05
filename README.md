@@ -1,6 +1,9 @@
 # Laravel OAuth
 
 [![codecov](https://codecov.io/gh/SameOldNick/laravel-oauth/graph/badge.svg?token=knEdg9Q0Ti)](https://codecov.io/gh/SameOldNick/laravel-oauth)
+![Packagist Downloads](https://img.shields.io/packagist/dt/sameoldnick/laravel-oauth)
+![Packagist Version](https://img.shields.io/packagist/v/sameoldnick/laravel-oauth)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/sameoldnick/laravel-oauth/tests.yml)
 
 Integrates Laravel Socialite with your app's authentication flow, including account linking, account relinking, registration/login gate checks, and stack-specific response handling.
 
