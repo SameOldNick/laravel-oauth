@@ -14,7 +14,9 @@ trait CreatesOAuthErrorResponses
      */
     public function create(OAuthError $error, Client $client, SocialUser $socialUser, ?Authenticatable $user = null)
     {
-        return back()->with('error', $this->getErrorMessage($error, $client, $socialUser, $user));
+        $intendedUrl = session()->pull('oauth.intended_url', url()->previous());
+
+        return redirect()->to($intendedUrl)->with('error', $this->getErrorMessage($error, $client, $socialUser, $user));
     }
 
     /**
