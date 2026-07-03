@@ -29,7 +29,9 @@ class RedirectHandler implements OAuthRedirectHandler
         session()->put('oauth.intended_url', url()->previous());
 
         // Set redirect URL (since it will be missing)
-        $client->provider()->redirectUrl(route('oauth.callback', ['client' => $client->clientName()]));
+        if (method_exists($client->provider(), 'redirectUrl')) {
+            $client->provider()->redirectUrl(route('oauth.callback', ['client' => $client->clientName()]));
+        }
 
         return $client->provider()->redirect();
     }

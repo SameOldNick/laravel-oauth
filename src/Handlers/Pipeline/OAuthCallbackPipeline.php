@@ -8,7 +8,7 @@ use SameOldNick\OAuth\Contracts\Handlers\OAuthCallbackPipelineStep;
 class OAuthCallbackPipeline
 {
     /**
-     * @var OAuthCallbackPipelineStep[]
+     * @var OAuthCallbackPipelineStep[]|class-string<OAuthCallbackPipelineStep>[]
      */
     protected array $steps = [];
 
@@ -25,7 +25,6 @@ class OAuthCallbackPipeline
      * Set the steps to be executed in the pipeline
      *
      * @param  class-string<OAuthCallbackPipelineStep>[]  $steps
-     * @return $this
      */
     public function through(array $steps): self
     {

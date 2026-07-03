@@ -61,7 +61,7 @@ class OAuthFlowHandler implements OAuthFlowHandlerContract
             abort(404);
         }
 
-        abort_if(! $driver || ! $driver->isConfigured(), 404);
+        abort_if(! ($driver && $driver->isConfigured()), 404);
 
         return $driver;
     }

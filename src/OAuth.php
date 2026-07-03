@@ -84,7 +84,6 @@ class OAuth extends Manager
      * Builds the client instance.
      *
      * @param  class-string<Client>  $clientClass
-     * @return Client
      */
     protected function buildClient(string $clientClass)
     {

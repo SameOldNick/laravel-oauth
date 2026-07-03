@@ -5,6 +5,7 @@ namespace SameOldNick\OAuth\Clients;
 use Exception;
 use Illuminate\Container\Container;
 use Illuminate\Support\Arr;
+use Laravel\Socialite\Contracts\Provider;
 use Laravel\Socialite\Contracts\User as SocialiteUser;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\AbstractProvider;
@@ -12,6 +13,9 @@ use Laravel\Socialite\Two\InvalidStateException;
 use SameOldNick\OAuth\Exceptions\OAuthLoginException;
 use SameOldNick\OAuth\Support\ConfigHelper;
 
+/**
+ * Base class for OAuth clients.
+ */
 abstract class Client
 {
     /**
@@ -101,7 +105,7 @@ abstract class Client
     /**
      * Gets Socialite provider.
      *
-     * @return AbstractProvider
+     * @return Provider|AbstractProvider
      */
     public function provider()
     {
