@@ -2,11 +2,11 @@
 
 namespace SameOldNick\OAuth;
 
+use Illuminate\Support\Manager;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Clients\GitHub;
 use SameOldNick\OAuth\Clients\Google;
 use SameOldNick\OAuth\Clients\Twitter;
-use Illuminate\Support\Manager;
 
 class OAuth extends Manager
 {

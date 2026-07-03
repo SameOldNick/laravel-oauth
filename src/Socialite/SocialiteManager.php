@@ -2,12 +2,12 @@
 
 namespace SameOldNick\OAuth\Socialite;
 
-use SameOldNick\OAuth\Support\ConfigHelper;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Support\Str;
 use Illuminate\Support\Traits\ForwardsCalls;
 use Laravel\Socialite\SocialiteManager as BaseSocialiteManager;
 use Laravel\Socialite\Two\AbstractProvider;
+use SameOldNick\OAuth\Support\ConfigHelper;
 
 class SocialiteManager extends BaseSocialiteManager
 {

@@ -2,9 +2,9 @@
 
 namespace SameOldNick\OAuth\Contracts\Responses;
 
-use SameOldNick\OAuth\Clients\Client;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Laravel\Socialite\Contracts\User as SocialUser;
+use SameOldNick\OAuth\Clients\Client;
 
 interface LoggedInResponse
 {

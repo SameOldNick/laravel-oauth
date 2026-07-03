@@ -18,11 +18,11 @@ use Workbench\Database\Factories\UserFactory;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasConnectedAccounts;
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     use SoftDeletes;
-
     use TwoFactorAuthenticatable;
 
     /**

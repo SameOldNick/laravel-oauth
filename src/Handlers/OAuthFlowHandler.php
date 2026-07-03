@@ -2,14 +2,14 @@
 
 namespace SameOldNick\OAuth\Handlers;
 
+use Exception;
+use InvalidArgumentException;
 use SameOldNick\OAuth\Clients\Client;
 use SameOldNick\OAuth\Contracts\Handlers\OAuthCallbackHandler;
 use SameOldNick\OAuth\Contracts\Handlers\OAuthFlowHandler as OAuthFlowHandlerContract;
 use SameOldNick\OAuth\Contracts\Handlers\OAuthRedirectHandler;
 use SameOldNick\OAuth\Exceptions\OAuthLoginException;
 use SameOldNick\OAuth\Facades\OAuth;
-use Exception;
-use InvalidArgumentException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class OAuthFlowHandler implements OAuthFlowHandlerContract

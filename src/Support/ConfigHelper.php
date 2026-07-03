@@ -3,8 +3,8 @@
 namespace SameOldNick\OAuth\Support;
 
 use App\Models\User;
-use SameOldNick\OAuth\Models\OAuthProvider;
 use Illuminate\Database\Eloquent\Model;
+use SameOldNick\OAuth\Models\OAuthProvider;
 
 class ConfigHelper
 {

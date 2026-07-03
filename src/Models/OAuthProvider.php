@@ -3,11 +3,11 @@
 namespace SameOldNick\OAuth\Models;
 
 use App\Models\User;
-use SameOldNick\OAuth\Events\AccountDisconnected;
-use SameOldNick\OAuth\Support\ConfigHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
+use SameOldNick\OAuth\Events\AccountDisconnected;
+use SameOldNick\OAuth\Support\ConfigHelper;
 
 /**
  * @property int $id
