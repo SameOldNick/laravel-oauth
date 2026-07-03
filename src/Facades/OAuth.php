@@ -39,7 +39,7 @@ class OAuth extends Facade
             'expires_in' => $user['expires_in'] ?? null,
         ]);
 
-        Socialite::fake($driver, fn () => (new User)->setRaw($user)->map(
+        return Socialite::fake($driver, fn () => (new User)->setRaw($user)->map(
             Arr::mapWithKeys($user, fn ($value, $key) => [Str::camel($key) => $value]))
         );
     }

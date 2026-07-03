@@ -14,8 +14,6 @@ trait CreatesConnectedAccountResponses
 {
     /**
      * Authenticate response
-     *
-     * @return void
      */
     protected function createAuthenticateResponse(Client $client, SocialUser $socialUser, Authenticatable $user)
     {
