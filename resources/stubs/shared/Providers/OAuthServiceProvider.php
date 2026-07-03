@@ -5,6 +5,7 @@ namespace VendorName\Providers;
 use Illuminate\Support\ServiceProvider;
 use SameOldNick\OAuth\Contracts\Responses\AuthenticateResponse as AuthenticateResponseContract;
 use SameOldNick\OAuth\Contracts\Responses\ErrorResponse as ErrorResponseContract;
+use SameOldNick\OAuth\Contracts\Responses\ExceptionResponse as ExceptionResponseContract;
 use SameOldNick\OAuth\Contracts\Responses\LoggedInResponse as LoggedInResponseContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthAccountAssociator as OAuthAccountAssociatorContract;
 use SameOldNick\OAuth\Contracts\Services\OAuthAuthenticationState as OAuthAuthenticationStateContract;
@@ -13,6 +14,7 @@ use SameOldNick\OAuth\Contracts\Services\OAuthUserRegistrar as OAuthUserRegistra
 use SameOldNick\OAuth\Contracts\Services\OAuthUserResolver as OAuthUserResolverContract;
 use VendorName\OAuth\Fortify\Responses\AuthenticateResponse;
 use VendorName\OAuth\Fortify\Responses\ErrorResponse;
+use VendorName\OAuth\Fortify\Responses\ExceptionResponse;
 use VendorName\OAuth\Fortify\Responses\LoggedInResponse;
 use VendorName\OAuth\Fortify\Services\OAuthAccountAssociator;
 use VendorName\OAuth\Fortify\Services\OAuthAuthenticationState;
@@ -30,6 +32,7 @@ class OAuthServiceProvider extends ServiceProvider
         $this->app->bind(OAuthUserResolverContract::class, OAuthUserResolver::class);
         $this->app->bind(OAuthGateContract::class, OAuthGate::class);
 
+        $this->app->bind(ExceptionResponseContract::class, ExceptionResponse::class);
         $this->app->bind(ErrorResponseContract::class, ErrorResponse::class);
         $this->app->bind(AuthenticateResponseContract::class, AuthenticateResponse::class);
         $this->app->bind(LoggedInResponseContract::class, LoggedInResponse::class);
