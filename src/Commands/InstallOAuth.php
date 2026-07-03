@@ -154,6 +154,7 @@ class InstallOAuth extends Command
             $baseSource.'/Responses/AuthenticateResponse.php' => $stackDestination.'/Responses/AuthenticateResponse.php',
             $baseSource.'/Responses/LoggedInResponse.php' => $stackDestination.'/Responses/LoggedInResponse.php',
             $baseSource.'/Responses/ErrorResponse.php' => $stackDestination.'/Responses/ErrorResponse.php',
+            $baseSource.'/Responses/ExceptionResponse.php' => $stackDestination.'/Responses/ExceptionResponse.php',
         ];
     }
 
@@ -176,6 +177,7 @@ class InstallOAuth extends Command
             $baseSource.'/Responses/AuthenticateResponse.php' => $stackDestination.'/Responses/AuthenticateResponse.php',
             $baseSource.'/Responses/LoggedInResponse.php' => $stackDestination.'/Responses/LoggedInResponse.php',
             $baseSource.'/Responses/ErrorResponse.php' => $stackDestination.'/Responses/ErrorResponse.php',
+            $baseSource.'/Responses/ExceptionResponse.php' => $stackDestination.'/Responses/ExceptionResponse.php',
         ];
     }
 
