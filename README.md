@@ -68,11 +68,13 @@ TWITTER_OAUTH_ENABLED=true
 TWITTER_CLIENT_ID=...
 TWITTER_CLIENT_SECRET=...
 TWITTER_REDIRECT_URI="${APP_URL}/oauth/callback/twitter"
+
+# See the 'config/oauth.php' file for more environment variables.
 ```
 
 6. Ensure the generated app provider is registered.
 
-The install command attempts to add `App\\Providers\\OAuthServiceProvider::class` to `bootstrap/providers.php`. If not added automatically, register it manually.
+The install command attempts to add `App\Providers\OAuthServiceProvider::class` to `bootstrap/providers.php`. If not added automatically, register it manually.
 
 ## Wiki
 
