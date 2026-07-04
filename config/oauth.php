@@ -80,6 +80,23 @@ return [
         'callback' => [
             'as' => 'callback',
         ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Post-Authentication Redirects
+        |--------------------------------------------------------------------------
+        |
+        | Define named routes to redirect to after successful or failed OAuth
+        | authentication. When set, these override the default behaviour of
+        | redirecting back to the user's previous page (the intended URL).
+        |
+        | Example: 'success' => 'dashboard', 'error' => 'login'
+        |
+        */
+        'redirects' => [
+            'success' => env('OAUTH_REDIRECT_SUCCESS'),
+            'error' => env('OAUTH_REDIRECT_ERROR'),
+        ],
     ],
 
     /*

@@ -17,8 +17,12 @@ class LoggedInResponse implements LoggedInResponseContract
     {
         OAuthSignedIn::dispatch($user, $client->clientName());
 
+        $fallback = config('oauth.routes.redirects.success')
+            ? route(config('oauth.routes.redirects.success'))
+            : '/';
+
         return redirect()
-            ->intended('/')
+            ->intended($fallback)
             ->with('success', __('oauth::messages.successfully_signed_in', ['provider' => $client->getName()]));
     }
 }

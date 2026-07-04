@@ -18,8 +18,12 @@ class LoggedInResponse implements LoggedInResponseContract
     {
         OAuthSignedIn::dispatch($user, $client->clientName());
 
+        $fallback = config('oauth.routes.redirects.success')
+            ? route(config('oauth.routes.redirects.success'))
+            : Fortify::redirects('login');
+
         return redirect()
-            ->intended(Fortify::redirects('login'))
+            ->intended($fallback)
             ->with('success', __('oauth::messages.successfully_signed_in', ['provider' => $client->getName()]));
     }
 }

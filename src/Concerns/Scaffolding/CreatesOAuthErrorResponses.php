@@ -10,13 +10,18 @@ use SameOldNick\OAuth\Enums\OAuthError;
 trait CreatesOAuthErrorResponses
 {
     /**
-     * {@inheritDoc}
+     * Get the URL to redirect to on error. Checks the config for a named route
+     * first, then falls back to the intended URL stored in the session.
      */
-    public function create(OAuthError $error, Client $client, SocialUser $socialUser, ?Authenticatable $user = null)
+    protected function getErrorRedirectUrl(): string
     {
-        $intendedUrl = session()->pull('oauth.intended_url', url()->previous());
+        $redirectError = config('oauth.routes.redirects.error');
 
-        return redirect()->to($intendedUrl)->with('error', $this->getErrorMessage($error, $client, $socialUser, $user));
+        if ($redirectError) {
+            return route($redirectError);
+        }
+
+        return session()->pull('oauth.intended_url', url()->previous());
     }
 
     /**
