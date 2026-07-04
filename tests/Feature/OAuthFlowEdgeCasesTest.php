@@ -156,4 +156,51 @@ class OAuthFlowEdgeCasesTest extends TestCase
         // Should require login first
         $this->assertGuest();
     }
+
+    public function test_callback_redirects_to_intended_url_to_prevent_redirect_loop(): void
+    {
+        config([
+            'oauth.clients.github.enabled' => true,
+            'oauth.clients.github.client_id' => 'test-client-id',
+            'oauth.clients.github.client_secret' => 'test-client-secret',
+        ]);
+
+        $provider = Mockery::mock();
+        $provider->shouldReceive('redirectUrl')->andReturnSelf();
+        $provider->shouldReceive('redirect')->andReturn(
+            redirect('https://github.com/login/oauth/authorize')
+        );
+        $provider->shouldReceive('user')->once()->andThrow(
+            new InvalidStateException('Bad state.')
+        );
+
+        Socialite::shouldReceive('driver')
+            ->with('github')
+            ->andReturn($provider);
+
+        // Simulate the user coming from a known page (e.g., /settings)
+        $this->get('/settings');
+
+        // Initiate OAuth redirect — RedirectHandler stores url()->previous()
+        // as 'oauth.intended_url' so the callback knows where to return on error
+        $this->get(route('oauth.redirect', ['client' => 'github']));
+
+        // Callback fails with an InvalidStateException.
+        // The error response must redirect to the intended URL (the page the user
+        // was on *before* the OAuth redirect: /settings), NOT to a raw 400 page.
+        // If a 400 were returned, hitting "back" in the browser would take the user
+        // back to the OAuth provider's site, creating an infinite redirect loop.
+        $response = $this->get(route('oauth.callback', ['client' => 'github']));
+
+        $response->assertRedirect();
+        $response->assertSessionHas('error');
+
+        // The redirect must point to the intended URL (/settings), not to the
+        // OAuth provider (github.com), which would cause a redirect loop.
+        $this->assertStringNotContainsString(
+            'github.com',
+            $response->headers->get('Location'),
+            'Error response redirected back to the OAuth provider — this would cause an infinite redirect loop.'
+        );
+    }
 }
