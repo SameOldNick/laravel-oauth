@@ -37,9 +37,7 @@ class OAuthFlowHandler implements OAuthFlowHandlerContract
 
         $socialUser = $this->getSocialUser($driver);
 
-        $handler = app(OAuthCallbackHandler::class);
-
-        return $handler->handleCallback($driver, $socialUser);
+        return app(OAuthCallbackHandler::class)->handleCallback($driver, $socialUser);
     }
 
     /**
