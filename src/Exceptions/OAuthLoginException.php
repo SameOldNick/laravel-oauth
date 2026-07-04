@@ -11,12 +11,4 @@ class OAuthLoginException extends OAuthException
     ) {
         parent::__construct($original?->getMessage() ?? 'Unable to authenticate using OAuth.');
     }
-
-    /**
-     * Gets the original exception that caused the login failure, if available.
-     */
-    public function getInnerException(): ?Exception
-    {
-        return $this->original;
-    }
 }
