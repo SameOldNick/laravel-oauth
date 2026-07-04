@@ -67,8 +67,8 @@ class OAuthFlowEdgeCasesTest extends TestCase
         Socialite::shouldReceive('driver')->once()->with('github')->andReturn($provider);
 
         $this->get(route('oauth.callback', ['client' => 'github']))
-            ->assertStatus(400)
-            ->assertSeeText("An OAuth response was received that wasn't expected.");
+            ->assertRedirect()
+            ->assertSessionHas('error', fn ($value) => str_contains($value, 'An OAuth response was received that wasn\'t expected.'));
     }
 
     public function test_linked_user_with_two_factor_redirects_to_two_factor_challenge(): void
@@ -134,7 +134,9 @@ class OAuthFlowEdgeCasesTest extends TestCase
         $response = $this->get(route('oauth.callback', ['client' => 'github']));
 
         // Should return 400 Bad Request with error message
-        $response->assertStatus(400);
+        $response
+            ->assertRedirect()
+            ->assertSessionHas('error', fn ($value) => str_contains($value, 'Provider connection failed'));
     }
 
     public function test_email_exists_with_password_requires_login_before_oauth()
