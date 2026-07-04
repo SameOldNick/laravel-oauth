@@ -24,11 +24,14 @@ class OAuthException extends Exception
      */
     public function render(Request $request)
     {
-        try {
-            return app(ExceptionResponse::class)->create($request, $this);
-        } catch (Exception $e) {
-            // In case creating the response fails, return false to let the default exception handler handle it.
-            return false;
+        if (app()->bound(ExceptionResponse::class)) {
+            try {
+                return app(ExceptionResponse::class)->create($request, $this);
+            } catch (Exception $e) {
+                // In case creating the response fails, fall through to the default response below.
+            }
         }
+
+        return response(__('oauth::messages.callback_error', ['message' => $this->getMessage()]), 400);
     }
 }
