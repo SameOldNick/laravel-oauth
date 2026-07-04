@@ -35,15 +35,7 @@ class OAuthFlowHandler implements OAuthFlowHandlerContract
 
         $driver->prepareCallback();
 
-        try {
-            $socialUser = $driver->getSocialUser();
-        } catch (OAuthLoginException $exception) {
-            // Throw the exception to be handled by the exception handler, which will use the ExceptionResponse to create a response.
-            throw $exception;
-        } catch (Exception $exception) {
-            // If any other exception occurs, wrap it in an OAuthLoginException and throw it to be handled by the exception handler.
-            throw new OAuthLoginException($exception);
-        }
+        $socialUser = $this->getSocialUser($driver);
 
         $handler = app(OAuthCallbackHandler::class);
 
@@ -66,5 +58,23 @@ class OAuthFlowHandler implements OAuthFlowHandlerContract
         abort_if(! ($driver && $driver->isConfigured()), 404);
 
         return $driver;
+    }
+
+    /**
+     * Gets the social user from the driver, handling exceptions appropriately.
+     *
+     * @throws OAuthLoginException
+     */
+    protected function getSocialUser(Client $driver)
+    {
+        try {
+            return $driver->getSocialUser();
+        } catch (OAuthLoginException $exception) {
+            // Throw the exception to be handled by the exception handler, which will use the ExceptionResponse to create a response.
+            throw $exception;
+        } catch (Exception $exception) {
+            // If any other exception occurs, wrap it in an OAuthLoginException and throw it to be handled by the exception handler.
+            throw new OAuthLoginException($exception);
+        }
     }
 }
