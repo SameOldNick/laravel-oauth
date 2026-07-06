@@ -11,13 +11,24 @@ use SameOldNick\OAuth\Clients\Twitter;
 class OAuth extends Manager
 {
     /**
+     * The array of driver classes.
+     *
+     * @var array<string, class-string<Client>>
+     */
+    protected array $driverClasses = [
+        'github' => GitHub::class,
+        'google' => Google::class,
+        'twitter' => Twitter::class,
+    ];
+
+    /**
      * Gets all of the driver names.
      *
      * @return string[]
      */
     public function getAllDriverNames()
     {
-        return array_unique([...array_keys($this->customCreators), 'github', 'google', 'twitter']);
+        return array_unique([...array_keys($this->customCreators), ...array_keys($this->driverClasses)]);
     }
 
     /**
@@ -51,33 +62,16 @@ class OAuth extends Manager
     }
 
     /**
-     * Creates an instance of the GitHub driver.
-     *
-     * @return GitHub
+     * {@inheritDoc}
      */
-    protected function createGitHubDriver()
+    protected function createDriver($driver)
     {
-        return $this->buildClient(GitHub::class);
-    }
+        // Check if the driver is in the driverClasses array before calling the parent method.
+        if (isset($this->driverClasses[$driver])) {
+            return $this->buildClient($this->driverClasses[$driver]);
+        }
 
-    /**
-     * Creates an instance of the Google driver.
-     *
-     * @return Google
-     */
-    protected function createGoogleDriver()
-    {
-        return $this->buildClient(Google::class);
-    }
-
-    /**
-     * Creates an instance of the Twitter driver.
-     *
-     * @return Twitter
-     */
-    protected function createTwitterDriver()
-    {
-        return $this->buildClient(Twitter::class);
+        return parent::createDriver($driver);
     }
 
     /**
