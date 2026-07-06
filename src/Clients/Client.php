@@ -116,4 +116,18 @@ abstract class Client
      * Gets name of OAuth client.
      */
     abstract public function clientName(): string;
+
+    /**
+     * Gets default scopes for the provider.
+     */
+    abstract public function defaultScopes(): array;
+
+    /**
+     * Gets scopes for the provider.
+     */
+    public function getScopes(): array
+    {
+        // Check config first, fall back to defaults
+        return Arr::get($this->getConfig(), 'scopes', $this->defaultScopes());
+    }
 }

@@ -25,6 +25,14 @@ class Google extends Client
      */
     public function prepareRedirect(): void
     {
-        $this->provider()->scopes(['profile', 'email']);
+        $this->provider()->scopes($this->getScopes());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function defaultScopes(): array
+    {
+        return ['profile', 'email'];
     }
 }
