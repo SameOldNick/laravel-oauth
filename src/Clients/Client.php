@@ -19,15 +19,6 @@ use SameOldNick\OAuth\Support\ConfigHelper;
 abstract class Client
 {
     /**
-     * Initializes client.
-     */
-    public function __construct(
-        protected Container $container
-    ) {
-        //
-    }
-
-    /**
      * Checks if driver is configured.
      *
      * @return bool
