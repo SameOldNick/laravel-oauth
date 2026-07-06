@@ -111,7 +111,10 @@ abstract class Client
     /**
      * Gets default scopes for the provider.
      */
-    abstract public function defaultScopes(): array;
+    public function defaultScopes(): array
+    {
+        return $this->provider()->getScopes();
+    }
 
     /**
      * Gets scopes for the provider.

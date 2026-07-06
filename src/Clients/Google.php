@@ -27,12 +27,4 @@ class Google extends Client
     {
         $this->provider()->scopes($this->getScopes());
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function defaultScopes(): array
-    {
-        return ['profile', 'email'];
-    }
 }
