@@ -47,6 +47,46 @@ return [
             // Additional scopes can be specified here, or the default scopes will be used.
             // 'scopes' => ['users.read'],
         ],
+        'bitbucket' => [
+            'enabled' => env('BITBUCKET_OAUTH_ENABLED', true),
+            'client_id' => env('BITBUCKET_CLIENT_ID'),
+            'client_secret' => env('BITBUCKET_CLIENT_SECRET'),
+            'redirect' => env('BITBUCKET_REDIRECT_URI'),
+            // Additional scopes can be specified here, or the default scopes will be used.
+            // 'scopes' => ['users.read'],
+        ],
+        'gitlab' => [
+            'enabled' => env('GITLAB_OAUTH_ENABLED', true),
+            'client_id' => env('GITLAB_CLIENT_ID'),
+            'client_secret' => env('GITLAB_CLIENT_SECRET'),
+            'redirect' => env('GITLAB_REDIRECT_URI'),
+            // Additional scopes can be specified here, or the default scopes will be used.
+            // 'scopes' => ['users.read'],
+        ],
+        'linkedin' => [
+            'enabled' => env('LINKEDIN_OAUTH_ENABLED', true),
+            'client_id' => env('LINKEDIN_CLIENT_ID'),
+            'client_secret' => env('LINKEDIN_CLIENT_SECRET'),
+            'redirect' => env('LINKEDIN_REDIRECT_URI'),
+            // Additional scopes can be specified here, or the default scopes will be used.
+            // 'scopes' => ['users.read'],
+        ],
+        'slack' => [
+            'enabled' => env('SLACK_OAUTH_ENABLED', true),
+            'client_id' => env('SLACK_CLIENT_ID'),
+            'client_secret' => env('SLACK_CLIENT_SECRET'),
+            'redirect' => env('SLACK_REDIRECT_URI'),
+            // Additional scopes can be specified here, or the default scopes will be used.
+            // 'scopes' => ['users.read'],
+        ],
+        'twitch' => [
+            'enabled' => env('TWITCH_OAUTH_ENABLED', true),
+            'client_id' => env('TWITCH_CLIENT_ID'),
+            'client_secret' => env('TWITCH_CLIENT_SECRET'),
+            'redirect' => env('TWITCH_REDIRECT_URI'),
+            // Additional scopes can be specified here, or the default scopes will be used.
+            // 'scopes' => ['users.read'],
+        ],
     ],
 
     /*
