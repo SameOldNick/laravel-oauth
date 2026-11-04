@@ -19,12 +19,4 @@ class Facebook extends Client
     {
         return __('Facebook');
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function prepareRedirect(): void
-    {
-        $this->provider()->scopes($this->getScopes());
-    }
 }

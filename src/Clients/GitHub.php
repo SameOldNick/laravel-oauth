@@ -23,14 +23,6 @@ class GitHub extends Client
     /**
      * {@inheritDoc}
      */
-    public function prepareRedirect(): void
-    {
-        $this->provider()->scopes($this->getScopes());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function defaultScopes(): array
     {
         return ['read:user'];

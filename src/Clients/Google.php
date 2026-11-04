@@ -19,12 +19,4 @@ class Google extends Client
     {
         return __('Google');
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function prepareRedirect(): void
-    {
-        $this->provider()->scopes($this->getScopes());
-    }
 }

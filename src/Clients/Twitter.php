@@ -25,14 +25,6 @@ class Twitter extends Client
     /**
      * {@inheritDoc}
      */
-    public function prepareRedirect(): void
-    {
-        $this->provider()->scopes($this->getScopes());
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function defaultScopes(): array
     {
         return ['users.read'];

@@ -82,7 +82,7 @@ abstract class Client
      */
     public function prepareRedirect(): void
     {
-        //
+        $this->provider()->scopes($this->getScopes());
     }
 
     /**
