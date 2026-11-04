@@ -4,10 +4,6 @@ namespace SameOldNick\OAuth;
 
 use Illuminate\Support\Manager;
 use SameOldNick\OAuth\Clients\Client;
-use SameOldNick\OAuth\Clients\Facebook;
-use SameOldNick\OAuth\Clients\GitHub;
-use SameOldNick\OAuth\Clients\Google;
-use SameOldNick\OAuth\Clients\Twitter;
 
 class OAuth extends Manager
 {
@@ -17,10 +13,15 @@ class OAuth extends Manager
      * @var array<string, class-string<Client>>
      */
     protected array $driverClasses = [
-        'github' => GitHub::class,
-        'google' => Google::class,
-        'twitter' => Twitter::class,
-        'facebook' => Facebook::class,
+        'bitbucket' => Clients\Bitbucket::class,
+        'facebook' => Clients\Facebook::class,
+        'github' => Clients\GitHub::class,
+        'gitlab' => Clients\GitLab::class,
+        'google' => Clients\Google::class,
+        'linkedin' => Clients\LinkedIn::class,
+        'slack' => Clients\Slack::class,
+        'twitch' => Clients\Twitch::class,
+        'twitter' => Clients\Twitter::class,
     ];
 
     /**
