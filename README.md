@@ -21,7 +21,7 @@ Integrates Laravel Socialite with your app's authentication flow, including acco
 ## Requirements
 
 - PHP 8.4+
-- Laravel 11.x, 12.x, or 13.x
+- Laravel 12.x, or 13.x
 - `laravel/socialite` 5.27+
 
 ## Installation
