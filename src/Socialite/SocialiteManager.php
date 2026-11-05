@@ -16,9 +16,13 @@ class SocialiteManager extends BaseSocialiteManager
     /**
      * Aliases for socialite drivers
      *
+     * Provider classes don't always kebab-case to the name used in the config,
+     * for example `LinkedInProvider` becomes `linked-in`.
+     *
      * @var array
      */
     public static $aliases = [
+        'linked-in' => 'linkedin',
         'twitter' => 'twitter-oauth-2',
     ];
 
