@@ -1,5 +1,31 @@
 # Changelog
 
+## Release v1.2.0 - 2026-11-04
+
+### Added
+
+- Supports Bitbucket, GitLab, LinkedIn, Slack, and Twitch (`<PROVIDER>_OAUTH_ENABLED`, `_CLIENT_ID`, `_CLIENT_SECRET`, and `_REDIRECT_URI` env vars)
+- Configurable `scopes` per provider in `config/oauth.php`; when omitted, the provider's default scopes are used
+- Automatic merging of the package's default `config/oauth.php`, so built-in defaults apply even when the config file has not been published
+- CI matrix running the test suite against Laravel 12 and 13
+
+### Removed
+
+- Laravel 11.x support (`illuminate/contracts` now requires `^12.0||^13.0`)
+
+### Fixed
+
+- LinkedIn provider now resolves its OAuth configuration (Socialite's `LinkedInProvider` kebab-cases to `linked-in`, which didn't match the `linkedin` config key)
+- Workbench user model uses `$fillable`/`$hidden` properties instead of the Laravel 13-only `#[Fillable]`/`#[Hidden]` attributes, so the test suite runs on Laravel 12
+
+### Changed
+
+- `OAuth` resolves built-in drivers from a `$driverClasses` map instead of individual `createGitHubDriver()`, `createGoogleDriver()`, and `createTwitterDriver()` methods
+- Clients declare their default scopes through `defaultScopes()`, and the base `Client::prepareRedirect()` applies the configured or default scopes, so clients no longer override `prepareRedirect()`
+- Removed the unused constructor from the abstract `Client` class
+- Codecov action updated to v7 and workflow permissions restricted to `contents: read`
+- README badges now link to their Packagist and GitHub Actions pages
+
 ## Release v1.1.0 - 2026-07-04
 
 ### Added
